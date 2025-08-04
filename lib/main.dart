@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'temp_sk.dart';
+import 'suleymank/temp_sk.dart';
 import 'temp_bib.dart';
 
 void main() {
@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -29,210 +30,178 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+class _HomePageState extends State<HomePage> {
   bool _isHoveringSK = false;
   bool _isHoveringBIB = false;
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutBack,
-      ),
-    );
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF1A237E), // Koyu mavi
-              const Color(0xFF0D47A1), // Orta mavi
-              const Color(0xFF01579B), // Açık mavi
-            ],
+      body: Stack(
+        children: [
+          // Premium arka plan: gradient + blur daireler
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFe0e7ff),
+                  Color(0xFFf8fafc),
+                  Color(0xFFc7d2fe),
+                ],
+              ),
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Positioned(
-                top: 40,
-                left: 0,
-                right: 0,
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: const Text(
-                    'BIB Yazılım',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 2,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          offset: Offset(2, 2),
-                          blurRadius: 4,
+          // Dekoratif blur efektli daireler
+          Positioned(
+            top: -60,
+            left: -60,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blueAccent.withOpacity(0.18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueAccent.withOpacity(0.25),
+                    blurRadius: 80,
+                    spreadRadius: 30,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 40,
+            right: -40,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.deepPurpleAccent.withOpacity(0.13),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.deepPurpleAccent.withOpacity(0.18),
+                    blurRadius: 60,
+                    spreadRadius: 20,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // İçerik
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // SK görseli
+                MouseRegion(
+                  onEnter: (_) => setState(() => _isHoveringSK = true),
+                  onExit: (_) => setState(() => _isHoveringSK = false),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SKPage()),
+                      );
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                      margin: const EdgeInsets.symmetric(vertical: 18),
+                      width: _isHoveringSK ? 230 : 200,
+                      height: _isHoveringSK ? 230 : 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(36),
+                        boxShadow: _isHoveringSK
+                            ? [
+                                BoxShadow(
+                                  color: Colors.blueAccent.withOpacity(0.25),
+                                  blurRadius: 40,
+                                  spreadRadius: 2,
+                                ),
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.18),
+                                  blurRadius: 0,
+                                  spreadRadius: 0,
+                                ),
+                              ]
+                            : [
+                                BoxShadow(
+                                  color: Colors.blueGrey.withOpacity(0.07),
+                                  blurRadius: 12,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(36),
+                        child: Image.asset(
+                          'assets/sk.png',
+                          fit: BoxFit.cover,
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Center(
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                  MouseRegion(
-                    onEnter: (_) => setState(() => _isHoveringSK = true),
-                    onExit: (_) => setState(() => _isHoveringSK = false),
+                // BIB görseli
+                MouseRegion(
+                  onEnter: (_) => setState(() => _isHoveringBIB = true),
+                  onExit: (_) => setState(() => _isHoveringBIB = false),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const BIBPage()),
+                      );
+                    },
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      transform: Matrix4.identity()
-                        ..scale(_isHoveringSK ? 1.1 : 1.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: _isHoveringSK ? 15 : 10,
-                              spreadRadius: _isHoveringSK ? 5 : 2,
-                            ),
-                          ],
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withOpacity(0.9),
-                              Colors.white.withOpacity(0.8),
-                            ],
-                          ),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => const SKPage(),
-                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                  var curve = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
-                                  return FadeTransition(
-                                    opacity: curve,
-                                    child: Transform.scale(
-                                      scale: curve.value,
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                transitionDuration: const Duration(milliseconds: 500),
-                              ),
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(20),
-                          child: Padding(
-                            padding: const EdgeInsets.all(25),
-                            child: Image.asset(
-                              'assets/sk.png',
-                              width: 180,
-                              height: 180,
-                            ),
-                          ),
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                      margin: const EdgeInsets.symmetric(vertical: 18),
+                      width: _isHoveringBIB ? 230 : 200,
+                      height: _isHoveringBIB ? 230 : 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(36),
+                        boxShadow: _isHoveringBIB
+                            ? [
+                                BoxShadow(
+                                  color: Colors.deepPurpleAccent.withOpacity(0.22),
+                                  blurRadius: 40,
+                                  spreadRadius: 2,
+                                ),
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.15),
+                                  blurRadius: 0,
+                                  spreadRadius: 0,
+                                ),
+                              ]
+                            : [
+                                BoxShadow(
+                                  color: Colors.blueGrey.withOpacity(0.07),
+                                  blurRadius: 12,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(36),
+                        child: Image.asset(
+                          'assets/bib.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
-                  MouseRegion(
-                    onEnter: (_) => setState(() => _isHoveringBIB = true),
-                    onExit: (_) => setState(() => _isHoveringBIB = false),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      transform: Matrix4.identity()
-                        ..scale(_isHoveringBIB ? 1.1 : 1.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: _isHoveringBIB ? 15 : 10,
-                              spreadRadius: _isHoveringBIB ? 5 : 2,
-                            ),
-                          ],
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withOpacity(0.9),
-                              Colors.white.withOpacity(0.8),
-                            ],
-                          ),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => const BIBPage(),
-                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                  var curve = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
-                                  return FadeTransition(
-                                    opacity: curve,
-                                    child: Transform.scale(
-                                      scale: curve.value,
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                transitionDuration: const Duration(milliseconds: 500),
-                              ),
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(20),
-                          child: Padding(
-                            padding: const EdgeInsets.all(25),
-                            child: Image.asset(
-                              'assets/bib.png',
-                              width: 180,
-                              height: 180,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ), // Column
-            ), // Center
-          ), // ScaleTransition
-        ], // Stack'in children'ı
-      ), // Stack
-    ), // SafeArea
-  ), // Container
-); // Scaffold
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
-} // _HomePageState class sonu
+}
