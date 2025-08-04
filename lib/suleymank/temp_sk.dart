@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'information/founding&history.dart';
+import 'information/affiliation_structure.dart';
+import 'information/services_activities.dart';
 
 class SKPage extends StatelessWidget {
   const SKPage({super.key});
@@ -8,7 +11,6 @@ class SKPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Renkler
     const blue = Color(0xFF5393F5);
-    const orange = Color(0xFFFF6F00);
     const dark = Color(0xFF102A32);
 
     return Scaffold(
@@ -20,101 +22,82 @@ class SKPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 24),
-              // Başlık
-              RichText(
+              // Kuruluş Amacı ve Tarihi Başlığı
+              Text(
+                foundingTitle,
                 textAlign: TextAlign.center,
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "SÜLEYMAN KOYUNCUGİL\n",
-                      style: TextStyle(
-                        color: blue,
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                        height: 1.1,
-                      ),
-                    ),
-                    TextSpan(
-                      text: "İNOVASYON ",
-                      style: TextStyle(
-                        color: dark,
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                        height: 1.1,
-                      ),
-                    ),
-                    TextSpan(
-                      text: "MERKEZİ",
-                      style: TextStyle(
-                        color: orange,
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                        height: 1.1,
-                      ),
-                    ),
-                  ],
+                style: const TextStyle(
+                  color: blue,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                  height: 1.2,
                 ),
               ),
-              const SizedBox(height: 40),
-              // Açıklama 1
-              const Text(
-                "SÜLEYMAN KOYUNCUGİL İNOVASYON MERKEZİ, SÜLEYMAN KOYUNCUGİL’e doğum günü hediyesi olarak adını, hak ettiği biçimde; akıl, bilim, araştırma, icat ve yenilik alanında ölümsüzleştirmek için AİLESİ tarafından 23.09.2020 tarihinde açılmıştır.",
+              const SizedBox(height: 32),
+              // Kuruluş Amacı ve Tarihi Açıklama
+              Text(
+                foundingDescription,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: dark,
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1,
                   height: 1.6,
                 ),
               ),
-              const SizedBox(height: 32),
-              // Açıklama 2 + Link
-              Wrap(
-                alignment: WrapAlignment.center,
-                children: [
-                  const Text(
-                    "SÜLEYMAN KOYUNCUGİL İNOVASYON MERKEZİ, bağımsız AR-GE Merkezi olarak ",
-                    style: TextStyle(
-                      color: dark,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1,
-                      height: 1.6,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      const url = "https://www.bibyazilim.com.tr/";
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      }
-                    },
-                    child: const Text(
-                      "BİB Yazılım Savunma Enerji İnşaat A.Ş.",
-                      style: TextStyle(
-                        color: dark,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        decoration: TextDecoration.underline,
-                        height: 1.6,
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    " bünyesinde faaliyet gösterecektir.",
-                    style: TextStyle(
-                      color: dark,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1,
-                      height: 1.6,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 48),
+              // Bağlı Olduğu Kurum ve Yapı Başlığı
+              Text(
+                affiliationTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: blue,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.3,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 28),
+              // Bağlı Olduğu Kurum ve Yapı Açıklama
+              Text(
+                affiliationDescription,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: dark,
+                  fontSize: 19,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 48),
+              // Faaliyet Alanları ve Hizmetler Başlığı
+              Text(
+                servicesTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: blue,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.3,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 28),
+              // Faaliyet Alanları ve Hizmetler Açıklama
+              Text(
+                servicesDescription,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: dark,
+                  fontSize: 19,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1,
+                  height: 1.6,
+                ),
               ),
             ],
           ),
