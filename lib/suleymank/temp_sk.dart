@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'information/founding&history.dart';
 import 'information/affiliation_structure.dart';
 import 'information/services_activities.dart';

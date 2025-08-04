@@ -9,8 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  url_launcher: ^6.1.12
+  table_calendar: ^3.0.9
+  uuid: ^4.4.0 
+  intl: ^0.18.0
   cupertino_icons: ^1.0.8
-  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
