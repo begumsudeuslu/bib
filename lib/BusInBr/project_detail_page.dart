@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'project.dart'; // Project modelini import ettik
+import 'package:google_fonts/google_fonts.dart';
+import 'project.dart';
 
 class ProjectDetailPage extends StatelessWidget {
   final Project project;
@@ -9,17 +10,10 @@ class ProjectDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          project.title,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFF0D47A1),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Arka plan gradienti ve daireler
+          // Arka plan
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -33,99 +27,111 @@ class ProjectDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: -60,
-            left: -60,
-            child: Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(46, 68, 138, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(64, 68, 138, 255),
-                    blurRadius: 80,
-                    spreadRadius: 30,
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Geri butonu
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_rounded, 
+                          color: Colors.blueGrey[800],
+                          size: 28,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 40,
-            right: -40,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(33, 124, 77, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(46, 124, 77, 255),
-                    blurRadius: 60,
-                    spreadRadius: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // İçerik
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Hero Animasyonu için görsel
-                Center(
-                  child: Hero(
-                    tag: 'project-image-${project.id}', // ProjectsPage'deki tag ile aynı olmalı
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Image.network(
-                        project.imageUrl,
-                        height: 250,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: 250,
-                            width: double.infinity,
-                            color: Colors.grey[300],
-                            child: Icon(Icons.broken_image, size: 60, color: Colors.grey[600]),
-                          );
-                        },
+                  const SizedBox(height: 10),
+                  // Proje Görseli
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blueGrey.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Image.network(
+                          project.imageUrl,
+                          height: 250,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              height: 250,
+                              width: double.infinity,
+                              color: Colors.blueGrey[100],
+                              child: Icon(
+                                Icons.broken_image, 
+                                size: 60, 
+                                color: Colors.blueGrey[400]
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  project.title,
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
+
+                  // Proje Başlığı
+                  Text(
+                    project.title,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.blueGrey[800],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                _buildInfoRow(Icons.description, 'Açıklama', project.description),
-                const SizedBox(height: 15),
-                _buildInfoRow(Icons.assessment, 'Durum', project.status),
-                const SizedBox(height: 15),
-                _buildTechnologiesSection(project.technologies),
-                const SizedBox(height: 15),
-                _buildTeamLeadsSection(project.teamLeads),
-                const SizedBox(height: 30),
-                Center(
-                  child: Text(
-                    'Detaylı bilgi için ekip liderleri ile iletişime geçebilirsiniz.',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600], fontStyle: FontStyle.italic),
-                    textAlign: TextAlign.center,
+                  const SizedBox(height: 15),
+
+                  // Bilgi Kartları
+                  _buildInfoCard(
+                    icon: Icons.description_rounded,
+                    label: 'Açıklama',
+                    content: project.description,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 15),
+                  _buildInfoCard(
+                    icon: Icons.assessment_rounded,
+                    label: 'Durum',
+                    content: project.status,
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Teknolojiler
+                  _buildTechnologiesSection(project.technologies),
+                  const SizedBox(height: 15),
+
+                  // Proje Liderleri
+                  _buildTeamLeadsSection(project.teamLeads),
+                  const SizedBox(height: 30),
+
+                  // Bilgilendirme Notu
+                  Center(
+                    child: Text(
+                      'Detaylı bilgi için ekip liderleri ile iletişime geçebilirsiniz.',
+                      style: GoogleFonts.quicksand(
+                        fontSize: 14, 
+                        color: Colors.blueGrey[600], 
+                        fontStyle: FontStyle.italic
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -133,116 +139,199 @@ class ProjectDetailPage extends StatelessWidget {
     );
   }
 
-  // Bilgi satırı için yardımcı widget
-  Widget _buildInfoRow(IconData icon, String label, String content) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 24, color: const Color(0xFF0D47A1)),
-            const SizedBox(width: 10),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 34.0), // İkonun hizasına göre boşluk
-          child: Text(
-            content,
-            style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String label,
+    required String content,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            icon, 
+            color: Colors.blueGrey[700], 
+            size: 20,
           ),
         ),
-      ],
+        title: Text(
+          label,
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w700,
+            color: Colors.blueGrey[800],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Text(
+          content,
+          style: GoogleFonts.quicksand(
+            color: Colors.blueGrey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
     );
   }
 
-  // Teknolojiler bölümü için yardımcı widget
   Widget _buildTechnologiesSection(List<String> technologies) {
     if (technologies.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.code, size: 24, color: const Color(0xFF0D47A1)),
-            const SizedBox(width: 10),
-            Text(
-              'Kullanılan Teknolojiler',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 34.0),
-          child: Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0,
-            children: technologies.map((tech) => Chip(
-              label: Text(tech, style: const TextStyle(fontSize: 14, color: Color(0xFF1A237E))),
-              backgroundColor: const Color(0xFFBBDEFB).withOpacity(0.7),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(color: Color(0xFF64B5F6), width: 0.5),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            )).toList(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            Icons.code_rounded, 
+            color: Colors.blueGrey[700], 
+            size: 20,
           ),
         ),
-      ],
+        title: Text(
+          'Kullanılan Teknolojiler',
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w700,
+            color: Colors.blueGrey[800],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: technologies.map((tech) => Chip(
+            label: Text(
+              tech, 
+              style: GoogleFonts.quicksand(
+                fontSize: 14, 
+                color: Colors.blueGrey[800]
+              )
+            ),
+            backgroundColor: Colors.blueGrey.withOpacity(0.1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(color: Colors.blueGrey[200]!, width: 0.5),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          )).toList(),
+        ),
+      ),
     );
   }
 
-  // Proje liderleri bölümü için yardımcı widget
   Widget _buildTeamLeadsSection(List<String> teamLeads) {
     if (teamLeads.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.groups, size: 24, color: const Color(0xFF0D47A1)),
-            const SizedBox(width: 10),
-            Text(
-              'Proje Lider(ler)i',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 34.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: teamLeads.map((leader) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Row(
-                children: [
-                  const Icon(Icons.person_outline, size: 18, color: Colors.grey),
-                  const SizedBox(width: 5),
-                  Text(leader, style: TextStyle(fontSize: 16, color: Colors.grey[800])),
-                ],
-              ),
-            )).toList(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            Icons.groups_rounded, 
+            color: Colors.blueGrey[700], 
+            size: 20,
           ),
         ),
-      ],
+        title: Text(
+          'Proje Lider(ler)i',
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w700,
+            color: Colors.blueGrey[800],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: teamLeads.map((leader) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.person_outline_rounded, 
+                  size: 18, 
+                  color: Colors.blueGrey[600]
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  leader, 
+                  style: GoogleFonts.quicksand(
+                    fontSize: 16, 
+                    color: Colors.blueGrey[700]
+                  )
+                ),
+              ],
+            ),
+          )).toList(),
+        ),
+      ),
     );
   }
 }

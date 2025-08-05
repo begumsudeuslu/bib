@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'project.dart'; // Project modelini import ettik
-import 'project_detail_page.dart'; // Detay sayfasını import ettik
+import 'package:google_fonts/google_fonts.dart';
+import 'project.dart';
+import 'project_detail_page.dart';
 
 class ProjectsPage extends StatefulWidget {
   const ProjectsPage({super.key});
@@ -107,17 +108,10 @@ class _ProjectsPageState extends State<ProjectsPage> {
     final List<Project> upcomingProjects = _filteredProjects.where((p) => p.status == 'Gelecek').toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Projelerimiz',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFF0D47A1),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Arka plan gradienti ve daireler
+          // Arka plan
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -131,91 +125,71 @@ class _ProjectsPageState extends State<ProjectsPage> {
               ),
             ),
           ),
-          Positioned(
-            top: -60,
-            left: -60,
-            child: Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(46, 68, 138, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(64, 68, 138, 255),
-                    blurRadius: 80,
-                    spreadRadius: 30,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 40,
-            right: -40,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(33, 124, 77, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(46, 124, 77, 255),
-                    blurRadius: 60,
-                    spreadRadius: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // İçerik
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Projelerde ara...',
-                    prefixIcon: const Icon(Icons.search, color: Color(0xFF0D47A1)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.9),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          SafeArea(
+            child: Column(
+              children: [
+                // Başlık ve Arama
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                  child: Row(
                     children: [
-                      _buildProjectCategory(
-                        context,
-                        '🚀 Aktif Projeler',
-                        activeProjects,
-                        Icons.rocket_launch,
-                        Colors.deepOrange,
+                      Text(
+                        'Projelerimiz',
+                        style: GoogleFonts.quicksand(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.blueGrey[800],
+                        ),
                       ),
-                      const SizedBox(height: 30),
-                      _buildProjectCategory(
-                        context,
-                        '🔮 Gelecek Projeler',
-                        upcomingProjects,
-                        Icons.lightbulb_outline,
-                        Colors.blueGrey,
-                      ),
-                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Projelerde ara...',
+                      hintStyle: GoogleFonts.quicksand(),
+                      prefixIcon: Icon(Icons.search, color: Colors.blueGrey[700]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.9),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildProjectCategory(
+                          context,
+                          ' Aktif Projeler',
+                          activeProjects,
+                          Icons.rocket_launch_rounded,
+                          Colors.deepOrange,
+                        ),
+                        const SizedBox(height: 30),
+                        _buildProjectCategory(
+                          context,
+                          ' Gelecek Projeler',
+                          upcomingProjects,
+                          Icons.lightbulb_outline_rounded,
+                          Colors.blueGrey,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -242,10 +216,10 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 const SizedBox(width: 10),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: GoogleFonts.quicksand(
                     fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
+                    fontWeight: FontWeight.w700,
+                    color: Colors.blueGrey[800],
                   ),
                 ),
               ],
@@ -253,7 +227,10 @@ class _ProjectsPageState extends State<ProjectsPage> {
             const SizedBox(height: 10),
             Text(
               'Şu anda bu kategoride proje bulunmamaktadır.',
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              style: GoogleFonts.quicksand(
+                fontSize: 16, 
+                color: Colors.blueGrey[600]
+              ),
             ),
           ],
         ),
@@ -269,18 +246,18 @@ class _ProjectsPageState extends State<ProjectsPage> {
             const SizedBox(width: 10),
             Text(
               title,
-              style: const TextStyle(
+              style: GoogleFonts.quicksand(
                 fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
+                fontWeight: FontWeight.w700,
+                color: Colors.blueGrey[800],
               ),
             ),
           ],
         ),
         const SizedBox(height: 15),
         ListView.builder(
-          shrinkWrap: true, // İçeriğine göre boyutlanmasını sağlar
-          physics: const NeverScrollableScrollPhysics(), // Ana kaydırma ile çakışmaz
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: projects.length,
           itemBuilder: (context, index) {
             final project = projects[index];
@@ -293,91 +270,125 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   // Her bir proje için kart widget'ı
   Widget _buildProjectCard(BuildContext context, Project project) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 15.0),
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.white.withOpacity(0.95),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProjectDetailPage(project: project),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(15),
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Hero Animasyonu için görsel
-              Hero(
-                tag: 'project-image-${project.id}', // Benzersiz tag
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    project.imageUrl,
-                    width: 90,
-                    height: 90,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 90,
-                        height: 90,
-                        color: Colors.grey[300],
-                        child: Icon(Icons.broken_image, size: 40, color: Colors.grey[600]),
-                      );
-                    },
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProjectDetailPage(project: project),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Hero Animasyonu için görsel
+                Hero(
+                  tag: 'project-image-${project.id}',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Image.network(
+                      project.imageUrl,
+                      width: 90,
+                      height: 90,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 90,
+                          height: 90,
+                          color: Colors.blueGrey[100],
+                          child: Icon(
+                            Icons.broken_image, 
+                            size: 40, 
+                            color: Colors.blueGrey[400]
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      project.title,
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A237E),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      project.description,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 6.0,
-                      runSpacing: 4.0,
-                      children: project.technologies.map((tech) => Chip(
-                        label: Text(tech, style: const TextStyle(fontSize: 12)),
-                        backgroundColor: const Color(0xFFBBDEFB),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      )).toList(),
-                    ),
-                    if (project.teamLeads.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          'Liderler: ${project.teamLeads.join(', ')}',
-                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        project.title,
+                        style: GoogleFonts.quicksand(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.blueGrey[800],
                         ),
                       ),
-                  ],
+                      const SizedBox(height: 5),
+                      Text(
+                        project.description,
+                        style: GoogleFonts.quicksand(
+                          fontSize: 14, 
+                          color: Colors.blueGrey[600]
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6.0,
+                        runSpacing: 4.0,
+                        children: project.technologies.map((tech) => Chip(
+                          label: Text(
+                            tech, 
+                            style: GoogleFonts.quicksand(
+                              fontSize: 12,
+                              color: Colors.blueGrey[800]
+                            )
+                          ),
+                          backgroundColor: Colors.blueGrey.withOpacity(0.1),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: Colors.blueGrey[200]!, width: 0.5),
+                          ),
+                        )).toList(),
+                      ),
+                      if (project.teamLeads.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'Liderler: ${project.teamLeads.join(', ')}',
+                            style: GoogleFonts.quicksand(
+                              fontSize: 13, 
+                              color: Colors.blueGrey[600]
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.arrow_forward_ios, size: 20, color: Colors.grey),
-            ],
+                Icon(
+                  Icons.arrow_forward_ios_rounded, 
+                  size: 20, 
+                  color: Colors.blueGrey[600]
+                ),
+              ],
+            ),
           ),
         ),
       ),

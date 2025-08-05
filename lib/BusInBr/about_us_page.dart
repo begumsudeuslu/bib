@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'employee_list_page.dart';
-import 'package:url_launcher/url_launcher.dart'; // Konum için dış bağlantı açmak için
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -8,194 +9,102 @@ class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Hakkımızda',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFF0D47A1),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Stack(
-        children: [
-          // Arka plan gradienti ve daireler
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFe0e7ff),
-                  Color(0xFFf8fafc),
-                  Color(0xFFc7d2fe),
-                ],
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 200.0,
+            floating: false,
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Text(
+                'Hakkımızda',
+                style: GoogleFonts.quicksand(
+                  color: Colors.blueGrey[800],
+                  fontWeight: FontWeight.w700,
+                  fontSize: 22,
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            top: -60,
-            left: -60,
-            child: Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(46, 68, 138, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(64, 68, 138, 255),
-                    blurRadius: 80,
-                    spreadRadius: 30,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 40,
-            right: -40,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(33, 124, 77, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(46, 124, 77, 255),
-                    blurRadius: 60,
-                    spreadRadius: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // İçerik
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                const Text(
-                  'BİZ KİMİZ?',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.blueGrey[100]!,
+                      Colors.blueGrey[200]!,
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'BIB Yazılım A.Ş. olarak, geleceğin dijital dünyasını şekillendiren öncü teknoloji çözümleri sunuyoruz. Yüksek kaliteli yazılım ürünleri geliştirerek, işletmelerin verimliliğini artırmayı ve dijitalleşme süreçlerini kolaylaştırmayı hedefliyoruz.',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+              ),
+            ),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded, 
+                color: Colors.blueGrey[800],
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16.0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Şirket Tanıtımı
+                _buildSectionCard(
+                  title: 'BİZ KİMİZ?',
+                  content: 'BIB Yazılım A.Ş. olarak, geleceğin dijital dünyasını şekillendiren öncü teknoloji çözümleri sunuyoruz. Yüksek kaliteli yazılım ürünleri geliştirerek, işletmelerin verimliliğini artırmayı ve dijitalleşme süreçlerini kolaylaştırmayı hedefliyoruz.',
+                  icon: Icons.business_rounded,
                 ),
-                const SizedBox(height: 30),
 
-                // --- Tamamlanmış Projeler Bölümü ---
-                const Text(
-                  '✅ Tamamlanmış Projeler',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
-                  ),
-                ),
+                const SizedBox(height: 20),
+
+                // Tamamlanmış Projeler
+                _buildSectionTitle('✅ Tamamlanmış Projeler'),
                 const SizedBox(height: 10),
                 _buildProjectItem('Kurumsal CRM Sistemi', 'Büyük ölçekli firmalar için müşteri ilişkileri yönetim çözümü.'),
                 _buildProjectItem('Mobil Bankacılık Uygulaması', 'Güvenli ve kullanıcı dostu mobil bankacılık platformu.'),
                 _buildProjectItem('E-Ticaret Entegrasyon Çözümü', 'Farklı e-ticaret altyapılarıyla entegre çalışan sistem.'),
                 _buildProjectItem('Yapay Zeka Destekli Analiz Platformu', 'Veri analizi ve raporlama için akıllı platform.'),
-                const SizedBox(height: 30),
 
-                // --- Konum Bilgisi Bölümü ---
-                const Text(
-                  '📍 Konumumuz',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
-                  ),
-                ),
+                const SizedBox(height: 20),
+
+                // İletişim Bilgileri
+                _buildSectionTitle('📍 Konumumuz'),
                 const SizedBox(height: 10),
-                _buildContactInfo(Icons.location_on, 'Adres', 'Örnek Mah. Örnek Cad. No: 123, Çankaya/Ankara'),
+                _buildContactInfo(Icons.location_on_rounded, 'Adres', 'Örnek Mah. Örnek Cad. No: 123, Çankaya/Ankara'),
                 _buildLaunchableLink(
                   context,
                   'Haritada Göster',
                   'https://www.google.com/maps/search/?api=1&query=Ankara+%C3%87ankaya+%C3%96rnek+Mah.+%C3%96rnek+Cad.+No:+123',
-                  Icons.map,
+                  Icons.map_rounded,
                 ),
+                _buildContactInfo(Icons.phone_rounded, 'Telefon', '+90 (312) 123 45 67'),
+                _buildContactInfo(Icons.email_rounded, 'E-posta', 'info@bibyazilim.com'),
+
+                const SizedBox(height: 20),
+
+                // Çalışanlar Bölümü
+                _buildSectionTitle('👥 Çalışanlarımız'),
                 const SizedBox(height: 10),
-                _buildContactInfo(Icons.phone, 'Telefon', '+90 (312) 123 45 67'),
-                _buildContactInfo(Icons.email, 'E-posta', 'info@bibyazilim.com'),
+                _buildEmployeeCard(context),
+
                 const SizedBox(height: 30),
 
-                // --- Çalışan Listesi Yönlendirme Kartı ---
-                const Text(
-                  '👥 Çalışanlarımız',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  color: Colors.white.withOpacity(0.95),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EmployeeListPage()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.group, size: 30, color: Color(0xFF0D47A1)),
-                          const SizedBox(width: 15),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Ekibimizle Tanışın',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1A237E),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Yetenekli ve deneyimli ekibimizi keşfedin.',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios, size: 20, color: Colors.grey),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-
+                // Telif Hakkı
                 Center(
                   child: Text(
-                    '© ${DateTime.now().year} BIB Yazılım A.Ş. Tüm Hakları Saklıdır.', // Yıl dinamikleştirildi
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    '© ${DateTime.now().year} BIB Yazılım A.Ş. Tüm Hakları Saklıdır.',
+                    style: GoogleFonts.quicksand(
+                      fontSize: 14, 
+                      color: Colors.blueGrey[600],
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-              ],
+              ]),
             ),
           ),
         ],
@@ -203,79 +112,229 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  // Yeni proje listesi öğesi oluşturma metodu
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.quicksand(
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        color: Colors.blueGrey[800],
+      ),
+    );
+  }
+
+  Widget _buildSectionCard({
+    required String title,
+    required String content,
+    required IconData icon,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        leading: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            icon, 
+            color: Colors.blueGrey[700], 
+            size: 28,
+          ),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w700,
+            color: Colors.blueGrey[800],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Text(
+          content,
+          style: GoogleFonts.quicksand(
+            color: Colors.blueGrey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildProjectItem(String title, String description) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.check_circle_outline, size: 28, color: Colors.green),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                ),
-              ],
-            ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
           ),
         ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.green.withOpacity(0.1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.green.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            Icons.check_circle_outline_rounded, 
+            color: Colors.green[700], 
+            size: 24,
+          ),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w700,
+            color: Colors.blueGrey[800],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Text(
+          description,
+          style: GoogleFonts.quicksand(
+            color: Colors.blueGrey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
 
-  // Mevcut iletişim bilgisi metodu
   Widget _buildContactInfo(IconData icon, String title, String content) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 28, color: const Color(0xFF0D47A1)),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  content,
-                  style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                ),
-              ],
-            ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
           ),
         ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            icon, 
+            color: Colors.blueGrey[700], 
+            size: 24,
+          ),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w700,
+            color: Colors.blueGrey[800],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Text(
+          content,
+          style: GoogleFonts.quicksand(
+            color: Colors.blueGrey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
 
-  // Harita bağlantısı için yeni metot
   Widget _buildLaunchableLink(BuildContext context, String text, String url, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: InkWell(
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: Icon(
+            icon, 
+            color: Colors.blueGrey[700], 
+            size: 24,
+          ),
+        ),
+        title: Text(
+          text,
+          style: GoogleFonts.quicksand(
+            color: Colors.blueGrey[700],
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.underline,
+          ),
+        ),
         onTap: () async {
           if (await canLaunchUrl(Uri.parse(url))) {
             await launchUrl(Uri.parse(url));
@@ -285,20 +344,89 @@ class AboutUsPage extends StatelessWidget {
             );
           }
         },
-        child: Row(
-          children: [
-            Icon(icon, size: 28, color: const Color(0xFF0D47A1)),
-            const SizedBox(width: 15),
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFF0D47A1),
-                decoration: TextDecoration.underline,
-                fontWeight: FontWeight.bold,
-              ),
+      ),
+    );
+  }
+
+  Widget _buildEmployeeCard(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EmployeeListPage()),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blueGrey[100],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueGrey.withOpacity(0.2),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      )
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.groups_rounded, 
+                    color: Colors.blueGrey[700], 
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ekibimizle Tanışın',
+                        style: GoogleFonts.quicksand(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.blueGrey[800],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Yetenekli ve deneyimli ekibimizi keşfedin.',
+                        style: GoogleFonts.quicksand(
+                          fontSize: 14,
+                          color: Colors.blueGrey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded, 
+                  size: 20, 
+                  color: Colors.blueGrey[600]
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
