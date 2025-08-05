@@ -4,17 +4,25 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.1
+  sdk: '>=3.6.1 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  
+  # UI ve Tasarım
+  google_fonts: ^6.3.0
+  icons_plus: ^5.0.0
+  
+  # Utility Paketleri
   url_launcher: ^6.1.12
   table_calendar: ^3.0.9
   uuid: ^4.4.0 
-  intl: ^0.18.0
+  intl: ^0.18.1
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
+  feather_icons: ^1.2.0
+  page_transition: ^2.1.0
   animations: ^2.0.8
 
 dev_dependencies:

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'my_calendar.dart'; // CalendarPage'inizin doğru yolu
-import 'about_us_page.dart'; // Yeni AboutUsPage'inizin yolu
+import 'my_calendar.dart';
+import 'about_us_page.dart';
 import 'projects_page.dart';
-
+import 'announcements_page.dart';
+import 'messages_page.dart'; // Mesajlar sayfası için
+import 'hr_page.dart'; // İK sayfası için
 
 void main() {
   runApp(const MyApp());
@@ -19,15 +21,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const BIBPage(), // Ana ekranı BIBPage olarak belirliyoruz
+      home: const BIBPage(),
     );
   }
 }
 
-// --- _DashboardView ve diğer yardımcı widget'larınız buraya gelecek ---
-// (Daha önceki yanıtlarda verdiğim _DashboardView, _buildInfoCard, _buildActivityCard kodlarını buraya ekleyin)
-// ...
-// --- _DashboardView sınıfı buraya gelecek ---
+// --- _DashboardView ve diğer yardımcı widget'larınız aynı kalacak ---
 class _DashboardView extends StatelessWidget {
   const _DashboardView({Key? key}) : super(key: key);
 
@@ -110,8 +109,6 @@ class _DashboardView extends StatelessWidget {
             color: Colors.purple.shade100,
           ),
           const SizedBox(height: 13),
-
-          // --- Yeni Hakkımızda Bölümü Başlangıcı ---
           Text(
             'ℹ️ Hakkımızda',
             style: TextStyle(
@@ -132,7 +129,6 @@ class _DashboardView extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             color: Colors.white.withOpacity(0.95),
             child: InkWell(
-              // Tıklanabilir olması için InkWell kullandık
               onTap: () {
                 Navigator.push(
                   context,
@@ -174,13 +170,11 @@ class _DashboardView extends StatelessWidget {
               ),
             ),
           ),
-          // --- Yeni Hakkımızda Bölümü Sonu ---
         ],
       ),
     );
   }
 
-  // Bilgi Kartı Oluşturma Fonksiyonu
   static Widget _buildInfoCard(
       {required String title, required String content, required IconData icon}) {
     return Card(
@@ -220,7 +214,6 @@ class _DashboardView extends StatelessWidget {
     );
   }
 
-  // Aktivite Kartı Oluşturma Fonksiyonu (Son Gelişmeler İçin)
   static Widget _buildActivityCard({
     required IconData icon,
     required String title,
@@ -267,8 +260,7 @@ class _DashboardView extends StatelessWidget {
     );
   }
 }
-
-// --- BIBPage sınıfı buradan başlıyor ---
+// --- BIBPage sınıfı yeniden düzenlenmiş hali ---
 class BIBPage extends StatefulWidget {
   const BIBPage({super.key});
 
@@ -277,48 +269,44 @@ class BIBPage extends StatefulWidget {
 }
 
 class _BIBPageState extends State<BIBPage> {
-  int _selectedIndex = 0; // Alttaki navigasyon çubuğu için seçili indeks
+  // Artık _selectedIndex'e ihtiyacımız yok
+  // int _selectedIndex = 0;
 
-  // Modüllerin listesi - Takvim ve Projeler burada yer almıyor çünkü Navigator.push ile açılıyor
-  // BottomNavigationBarItem sırasına göre düzenlendi:
-  // 0: Dashboard, 1: Takvim (Push ediliyor), 2: Projeler (Push ediliyor), 3: Mesajlar, 4: Duyurular, 5: İK, 6: Hakkımızda
-  static const List<Widget> _widgetOptions = <Widget>[
-    _DashboardView(), // Index 0: Dashboard
-    Text('Mesajlaşma ve İletişim Modülü Buraya Gelecek', // Index 1 (BNB 3. indeks: Mesajlar)
-        style: TextStyle(fontSize: 24, color: Colors.black)),
-    Text('Duyurular Modülü Buraya Gelecek', // Index 2 (BNB 4. indeks: Duyurular)
-        style: TextStyle(fontSize: 24, color: Colors.black)),
-    Text('İK Modülü Buraya Gelecek', // Index 3 (BNB 5. indeks: İK)
-        style: TextStyle(fontSize: 24, color: Colors.black)),
-    AboutUsPage(), // Index 4: Hakkımızda (BNB 6. indeks: Hakkımızda)
-  ];
+  // _widgetOptions listesine de gerek yok
+  // static const List<Widget> _widgetOptions = <Widget>[...];
 
   void _onItemTapped(int index) {
-    if (index == 1) { // Eğer tıklanan indeks "Takvim" ise (BottomNavigationBar'da 1. indeks)
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CalendarPage()),
-      );
-    } else if (index == 2) { // Eğer tıklanan indeks "Projeler" ise (BottomNavigationBar'da 2. indeks)
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ProjectsPage()),
-      );
+    Widget? page;
+    switch (index) {
+      case 0: // Dashboard
+        // Dashboard ana sayfa olduğu için bir şey yapmıyoruz, zaten buradayız
+        return;
+      case 1: // Takvim
+        page = const CalendarPage();
+        break;
+      case 2: // Projeler
+        page = const ProjectsPage();
+        break;
+      case 3: // Mesajlar
+        page = const MessagesPage();
+        break;
+      case 4: // Duyurular
+        page = const AnnouncementsPage();
+        break;
+      case 5: // İK
+        page = const HrPage();
+        break;
+      case 6: // Hakkımızda
+        page = const AboutUsPage();
+        break;
     }
-    else {
-      // Diğer menü öğeleri için _widgetOptions listesinden ilgili sayfayı göster.
-      // _widgetOptions listesinin indeksleri, BottomNavigationBar'daki fiziksel indekslerle
-      // Takvim ve Projeler'in araya girmesi nedeniyle farklılık gösterir.
-      int targetWidgetIndex = index;
-      if (index > 1) { // Eğer tıklanan indeks Takvim'den sonra geliyorsa, indeksini 1 azalt
-        targetWidgetIndex = index - 1;
-      }
-      if (index > 2) { // Eğer tıklanan indeks Projeler'den sonra geliyorsa, indeksini 1 daha azalt
-        targetWidgetIndex = index - 2;
-      }
-      setState(() {
-        _selectedIndex = targetWidgetIndex;
-      });
+    
+    // Sadece Dashboard dışındaki tüm butonlar için yeni bir sayfa aç
+    if (page != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => page!),
+      );
     }
   }
 
@@ -330,23 +318,22 @@ class _BIBPageState extends State<BIBPage> {
           'BIB Yazılım A.Ş. Kurumsal Uygulama',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.transparent, // AppBar'ı şeffaf yapıldı
-        elevation: 0, // Gölge kaldırıldı
-        iconTheme: const IconThemeData(color: Colors.white), // Geri butonu rengi
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      extendBodyBehindAppBar: true, // AppBar'ın arkasına body'nin uzanmasını sağlar
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Premium arka plan: gradient + blur daireler
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFe0e7ff), // Açık mavi tonu
-                  Color(0xFFf8fafc), // Neredeyse beyaz
-                  Color(0xFFc7d2fe), // Morumsu mavi tonu
+                  Color(0xFFe0e7ff),
+                  Color(0xFFf8fafc),
+                  Color(0xFFc7d2fe),
                 ],
               ),
             ),
@@ -389,10 +376,10 @@ class _BIBPageState extends State<BIBPage> {
               ),
             ),
           ),
-          // İçerik
-          SafeArea(
+          // Ana ekran sadece Dashboard olacak
+          const SafeArea(
             child: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
+              child: _DashboardView(),
             ),
           ),
         ],
@@ -404,35 +391,33 @@ class _BIBPageState extends State<BIBPage> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today), // Takvim ikonu (Index 1)
+            icon: Icon(Icons.calendar_today),
             label: 'Takvim',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business_center), // Projeler ikonu (Index 2)
+            icon: Icon(Icons.business_center),
             label: 'Projeler',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message), // Mesajlar ikonu (Index 3)
+            icon: Icon(Icons.message),
             label: 'Mesajlar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.campaign), // Duyurular ikonu (Index 4)
+            icon: Icon(Icons.campaign),
             label: 'Duyurular',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people), // İK ikonu (Index 5)
+            icon: Icon(Icons.people),
             label: 'İK',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.info), // Hakkımızda ikonu (Index 6)
+            icon: Icon(Icons.info),
             label: 'Hakkımızda',
           ),
         ],
-        // Buradaki _selectedIndex, sadece _widgetOptions içindeki sekmeler için doğrudur.
-        // Takvim ve Projeler açıldığında, BottomNavigationBar'daki görsel seçili ikon
-        // değişmeyebilir, çünkü _selectedIndex değeri o an değişmez.
-        // Bu durum, 'push' ile açılan sayfaların 'ana' BottomNavigationBar'ın kontrolünde olmamasından kaynaklanır.
-        currentIndex: _selectedIndex,
+        // Şu an hangi butona basılırsa basılsın, _selectedIndex değeri 0 kalacak.
+        // Çünkü tüm sayfalar yeni bir ekran olarak açılıyor.
+        currentIndex: 0,
         selectedItemColor: Colors.amber[800],
         unselectedItemColor: Colors.white70,
         onTap: _onItemTapped,
