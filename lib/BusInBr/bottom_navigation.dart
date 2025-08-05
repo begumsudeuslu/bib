@@ -5,7 +5,6 @@ import 'about_us_page.dart';
 import 'projects_page.dart';
 import 'messages_page.dart';
 import 'announcements_page.dart';
-import 'hr_page.dart';
 
 class BIBBottomNavigationBar extends StatefulWidget {
   const BIBBottomNavigationBar({super.key});
@@ -40,7 +39,7 @@ class _BIBBottomNavigationBarState extends State<BIBBottomNavigationBar> {
         page = const AnnouncementsPage();
         break;
       case 5: // İK
-        page = const HrPage();
+        //page = const HrPage();
         break;
       case 6: // Hakkımızda
         page = const AboutUsPage();
