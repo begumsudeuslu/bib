@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'bottom_navigation.dart';
+import 'messages_page.dart'; // Mesajlar sayfasını import ettik
+//import 'hr_page.dart'; // İK sayfası için gerekli
 
 void main() {
   runApp(const MyApp());
@@ -81,32 +83,51 @@ class _DashboardView extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildActivityCard(
+            context,
             icon: Icons.email,
             title: 'Yeni Mesajlar',
             description: '3 okunmamış mesajınız var. (Proje X ve Duyuru Y hakkında)',
             color: Colors.blue.shade100,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MessagesPage()),
+              );
+            },
           ),
           const SizedBox(height: 8),
           _buildActivityCard(
+            context,
             icon: Icons.announcement,
             title: 'Yeni Duyurular',
             description: 'İdari Karar: Yeni Ofis Düzenlemesi ve Eğitim Serisi Başlıyor.',
             color: Colors.green.shade100,
+            onTap: () {
+              // Yönlendirme eklenebilir
+            },
           ),
           const SizedBox(height: 8),
           _buildActivityCard(
+            context,
             icon: Icons.event,
             title: 'Yaklaşan Etkinlikler',
             description:
                 'Takım Toplantısı (05.08.2025, 14:00) ve İnovasyon Workshop (10.08.2025).',
             color: Colors.orange.shade100,
+            onTap: () {
+              // Yönlendirme eklenebilir
+            },
           ),
           const SizedBox(height: 8),
           _buildActivityCard(
+            context,
             icon: Icons.work,
             title: 'Yeni Projeler',
             description: 'Yeni "AI Destekli Analiz Platformu" projesi başlatıldı.',
             color: Colors.purple.shade100,
+            onTap: () {
+              // Yönlendirme eklenebilir
+            },
           ),
         ],
       ),
@@ -162,58 +183,71 @@ class _DashboardView extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildActivityCard({
+  
+  Widget _buildActivityCard(BuildContext context, {
     required IconData icon,
     required String title,
     required String description,
     required Color color,
+    VoidCallback? onTap, // onTap özelliği eklendi
   }) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              icon,
-              size: 30,
-              color: const Color(0xFF1A237E),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.quicksand(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF1A237E),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    description,
-                    style: GoogleFonts.quicksand(
-                      fontSize: 14,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                ],
+    return InkWell( // Kartı tıklanabilir yapmak için InkWell ile sardık
+      onTap: onTap,
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        color: color,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                size: 30,
+                color: const Color(0xFF1A237E),
               ),
-            ),
-          ],
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF1A237E),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      description,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 14,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+// Bu kısım, önceki kodunuzda eksik veya yanlış tanımlanmıştı.
+// BIBPage sınıfı, bir StatefulWidget olmalı ve bir durum (state) yaratmalıdır.
+class BIBPage extends StatefulWidget {
+  const BIBPage({super.key});
+
+  @override
+  State<BIBPage> createState() => _BIBPageState();
 }
 
 class _BIBPageState extends State<BIBPage> {
@@ -299,11 +333,4 @@ class _BIBPageState extends State<BIBPage> {
       bottomNavigationBar: const BIBBottomNavigationBar(),
     );
   }
-}
-
-class BIBPage extends StatefulWidget {
-  const BIBPage({super.key});
-
-  @override
-  State<BIBPage> createState() => _BIBPageState();
 }
