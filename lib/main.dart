@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'suleymank/temp_sk.dart'; // SKPage'inizin doğru yolu
-import 'BusInBr/temp_bib.dart'; // BIBPage'inizin doğru yolu
+import 'package:google_fonts/google_fonts.dart';
+import 'suleymank/temp_sk.dart';
+import 'BusInBr/temp_bib.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        textTheme: GoogleFonts.quicksandTextTheme(),
       ),
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
@@ -37,26 +39,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar'ı eklemedik çünkü bu bir seçim ekranı, ancak gerekirse eklenebilir.
-      // Eğer bir AppBar eklenseydi, BIB ve SK sayfalarındaki gibi şeffaf ve gölgesiz olmalıydı.
       body: Stack(
         children: [
-          // Premium arka plan: gradient + blur daireler
-          // BIB ve SK sayfalarınızla aynı gradient ve daire konumları kullanıldı
+          // Gradient Background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFe0e7ff), // Açık mavi tonu
-                  Color(0xFFf8fafc), // Neredeyse beyaz
-                  Color(0xFFc7d2fe), // Morumsu mavi tonu
+                  Color(0xFF6A9EC4), // Soft blue
+                  Color(0xFFB0C4DE), // Light steel blue
+                  Color(0xFF8A9FD1), // Soft periwinkle
                 ],
               ),
             ),
           ),
-          // Dekoratif blur efektli daireler (BIB ve SK sayfalarıyla aynı konum ve boyutlar)
+          // Top Left Decorative Circle
           Positioned(
             top: -60,
             left: -60,
@@ -65,10 +64,10 @@ class _HomePageState extends State<HomePage> {
               height: 180,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blueAccent.withOpacity(0.18),
+                color: Colors.white.withOpacity(0.2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.25),
+                    color: const Color(0xFF6A9EC4).withOpacity(0.3),
                     blurRadius: 80,
                     spreadRadius: 30,
                   ),
@@ -76,6 +75,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          // Bottom Right Decorative Circle
           Positioned(
             bottom: 40,
             right: -40,
@@ -84,10 +84,10 @@ class _HomePageState extends State<HomePage> {
               height: 140,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.deepPurpleAccent.withOpacity(0.13),
+                color: Colors.white.withOpacity(0.15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.deepPurpleAccent.withOpacity(0.18),
+                    color: const Color(0xFF8A9FD1).withOpacity(0.3),
                     blurRadius: 60,
                     spreadRadius: 20,
                   ),
@@ -95,13 +95,31 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // İçerik - SafeArea ile güvenli alana yerleştirildi
+          // Content
           SafeArea(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // SK görseli
+                  Text(
+                    'BIB Yazılım Platformu',
+                    style: GoogleFonts.quicksand(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.3),
+                          offset: const Offset(1, 1),
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  // SK Logo
                   MouseRegion(
                     onEnter: (_) => setState(() => _isHoveringSK = true),
                     onExit: (_) => setState(() => _isHoveringSK = false),
@@ -123,19 +141,19 @@ class _HomePageState extends State<HomePage> {
                           boxShadow: _isHoveringSK
                               ? [
                                   BoxShadow(
-                                    color: Colors.blueAccent.withOpacity(0.25),
+                                    color: Colors.white.withOpacity(0.3),
                                     blurRadius: 40,
                                     spreadRadius: 2,
                                   ),
                                   BoxShadow(
-                                    color: Colors.white.withOpacity(0.18),
-                                    blurRadius: 0,
-                                    spreadRadius: 0,
+                                    color: const Color(0xFF6A9EC4).withOpacity(0.2),
+                                    blurRadius: 20,
+                                    spreadRadius: 1,
                                   ),
                                 ]
                               : [
                                   BoxShadow(
-                                    color: Colors.blueGrey.withOpacity(0.07),
+                                    color: Colors.black.withOpacity(0.1),
                                     blurRadius: 12,
                                     spreadRadius: 1,
                                   ),
@@ -144,14 +162,14 @@ class _HomePageState extends State<HomePage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(36),
                           child: Image.asset(
-                            'assets/sk.png', // SK logonuzun doğru yolu
+                            'assets/sk.png',
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  // BIB görseli
+                  // BIB Logo
                   MouseRegion(
                     onEnter: (_) => setState(() => _isHoveringBIB = true),
                     onExit: (_) => setState(() => _isHoveringBIB = false),
@@ -173,19 +191,19 @@ class _HomePageState extends State<HomePage> {
                           boxShadow: _isHoveringBIB
                               ? [
                                   BoxShadow(
-                                    color: Colors.deepPurpleAccent.withOpacity(0.22),
+                                    color: Colors.white.withOpacity(0.3),
                                     blurRadius: 40,
                                     spreadRadius: 2,
                                   ),
                                   BoxShadow(
-                                    color: Colors.white.withOpacity(0.15),
-                                    blurRadius: 0,
-                                    spreadRadius: 0,
+                                    color: const Color(0xFF8A9FD1).withOpacity(0.2),
+                                    blurRadius: 20,
+                                    spreadRadius: 1,
                                   ),
                                 ]
                               : [
                                   BoxShadow(
-                                    color: Colors.blueGrey.withOpacity(0.07),
+                                    color: Colors.black.withOpacity(0.1),
                                     blurRadius: 12,
                                     spreadRadius: 1,
                                   ),
@@ -194,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(36),
                           child: Image.asset(
-                            'assets/bib.png', // BIB logonuzun doğru yolu
+                            'assets/bib.png',
                             fit: BoxFit.cover,
                           ),
                         ),
