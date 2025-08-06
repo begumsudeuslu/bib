@@ -38,9 +38,9 @@ class _BIBBottomNavigationBarState extends State<BIBBottomNavigationBar> {
       case 4: // Duyurular
         page = const AnnouncementsPage();
         break;
-      case 5: // İK
+      // case 5: // İK
         //page = const HrPage();
-        break;
+      //  break;
       case 6: // Hakkımızda
         page = const AboutUsPage();
         break;
@@ -103,7 +103,7 @@ class _BIBBottomNavigationBarState extends State<BIBBottomNavigationBar> {
                           _buildNavItem(2, Icons.work_outline_rounded, 'Projeler'),
                           _buildNavItem(3, Icons.chat_bubble_outline_rounded, 'Mesajlar'),
                           _buildNavItem(4, Icons.campaign_outlined, 'Duyurular'),
-                          _buildNavItem(5, Icons.groups_rounded, 'İK'),
+                          //_buildNavItem(5, Icons.groups_rounded, 'İK'),
                           _buildNavItem(6, Icons.info_outline_rounded, 'Hakkımızda'),
                           // Ekstra boşluk için
                           const SizedBox(width: 50),
