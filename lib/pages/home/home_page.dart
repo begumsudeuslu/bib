@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Eklendi
-import 'suleymank/temp_sk.dart';
-import 'BusInBr/temp_bib.dart';
-import 'login_page.dart'; // Eklendi
+import 'sections/suleymank/temp_sk.dart';
+import 'sections/BusInBr/temp_bib.dart';
+import '../login/login_page.dart'; // Eklendi
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

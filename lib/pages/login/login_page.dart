@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home_page.dart';
+import '../home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'managePassword/forgot_password_page.dart';
+import 'forgot_password/forgot_password_page.dart';
 
 
 class LoginPage extends StatefulWidget {

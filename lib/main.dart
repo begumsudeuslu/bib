@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'homePage/login_page.dart';
-import 'homePage/home_page.dart';
+import 'pages/login/login_page.dart';
+import 'pages/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
