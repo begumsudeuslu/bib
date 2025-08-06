@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'homePage/login_page.dart'; // Yeni oluşturduğumuz giriş sayfasını import ediyoruz
+import 'homePage/login_page.dart';
+import 'homePage/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // shared_preferences nesnesini alıyoruz
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +26,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.quicksandTextTheme(),
       ),
-      home: const LoginPage(), // Uygulama başlangıcını giriş sayfası olarak ayarlıyoruz.
+      home: isLoggedIn ? const HomePage() : const LoginPage(), // Bu satır kritik!
       debugShowCheckedModeBanner: false,
     );
   }

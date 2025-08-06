@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,15 +14,20 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
-    // Burada basit bir kontrol yapılır. Gerçek projede bir kimlik doğrulama servisi kullanılır.
+  void _login() async { // async keyword'ünü ekliyoruz
+    // Burada basit bir kontrol yapıyoruz.
     if (_usernameController.text == 'bib' && _passwordController.text == '123') {
+      
+      // Giriş başarılı! shared_preferences ile durumu kaydedelim.
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true); // 'isLoggedIn' anahtarıyla true değerini saklıyoruz.
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else {
-      // Hata mesajı gösterebilirsiniz
+      // Hata mesajı göster
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!')),
       );

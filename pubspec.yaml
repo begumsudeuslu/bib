@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.2.3
   
   # UI ve Tasarım
   icons_plus: ^5.0.0

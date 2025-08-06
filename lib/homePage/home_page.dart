@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'suleymank/temp_sk.dart'; // Bu import'u projenizdeki doğru yolla güncelleyin.
-import 'BusInBr/temp_bib.dart'; // Bu import'u projenizdeki doğru yolla güncelleyin.
+import 'package:shared_preferences/shared_preferences.dart'; // Eklendi
+import 'suleymank/temp_sk.dart';
+import 'BusInBr/temp_bib.dart';
+import 'login_page.dart'; // Eklendi
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,9 +16,30 @@ class _HomePageState extends State<HomePage> {
   bool _isHoveringSK = false;
   bool _isHoveringBIB = false;
 
+  void _logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // Giriş durumunu false yap
+
+    // Kullanıcıyı login sayfasına yönlendir
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('BIB Yazılım', style: GoogleFonts.quicksand(color: Colors.white)),
+        backgroundColor: const Color(0xFF6A9EC4),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: _logout,
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           // Gradient Background
@@ -26,9 +49,9 @@ class _HomePageState extends State<HomePage> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF6A9EC4), // Soft blue
-                  Color(0xFFB0C4DE), // Light steel blue
-                  Color(0xFF8A9FD1), // Soft periwinkle
+                  Color(0xFF6A9EC4),
+                  Color(0xFFB0C4DE),
+                  Color(0xFF8A9FD1),
                 ],
               ),
             ),
