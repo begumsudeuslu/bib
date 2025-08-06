@@ -109,6 +109,18 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+        appBar: AppBar(
+    title: Text(
+      'Projelerimiz',
+      style: GoogleFonts.quicksand(
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    foregroundColor: Colors.blueGrey[800],
+    automaticallyImplyLeading: true, // Geri butonu otomatik
+  ),
       body: Stack(
         children: [
           // Arka plan
@@ -129,21 +141,6 @@ class _ProjectsPageState extends State<ProjectsPage> {
             child: Column(
               children: [
                 // Başlık ve Arama
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Projelerimiz',
-                        style: GoogleFonts.quicksand(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.blueGrey[800],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
