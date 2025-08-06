@@ -1,44 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'managePassword/forgot_password_page.dart';
+import '../login_page.dart'; // Yeni şifre belirlendikten sonra login sayfasına döneceğiz.
 
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
-  void _login() async { // async keyword'ünü ekliyoruz
-    // Burada basit bir kontrol yapıyoruz.
-    if (_usernameController.text == 'bib' && _passwordController.text == '123') {
-      
-      // Giriş başarılı! shared_preferences ile durumu kaydedelim.
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true); // 'isLoggedIn' anahtarıyla true değerini saklıyoruz.
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    } else {
-      // Hata mesajı göster
+  void _resetPassword() {
+    // BURADA YENİ ŞİFREYİ GÜNCELLEME İŞLEMİ YAPILACAK
+    // *************************************
+    // Normalde uygulamada, yeni şifre ve şifre tekrarı kontrol edildikten sonra
+    // backend servisine API çağrısı yapılarak şifre güncellenecek.
+    //
+    // Şimdilik sadece bir SnackBar gösterildi.
+    // *************************************
+    if (_passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!')),
+        const SnackBar(content: Text('Lütfen tüm alanları doldurunuz.')),
       );
+      return;
     }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Şifreler uyuşmuyor.')),
+      );
+      return;
+    }
+
+    // Şifreler uyuşuyorsa, işlem başarılı!
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Şifreniz başarıyla güncellendi!')),
+    );
+
+    // Yeni şifre belirlendikten sonra giriş sayfasına yönlendirilir.
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (Route<dynamic> route) => false, // Tüm geçmişi temizle
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Yeni Şifre Belirle',
+          style: GoogleFonts.quicksand(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF6A9EC4),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: Stack(
         children: [
           // Gradient Background
@@ -48,54 +68,13 @@ class _LoginPageState extends State<LoginPage> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF6A9EC4), // Soft blue
-                  Color(0xFFB0C4DE), // Light steel blue
-                  Color(0xFF8A9FD1), // Soft periwinkle
+                  Color(0xFF6A9EC4),
+                  Color(0xFFB0C4DE),
+                  Color(0xFF8A9FD1),
                 ],
               ),
             ),
           ),
-          // Top Left Decorative Circle
-          Positioned(
-            top: -60,
-            left: -60,
-            child: Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF6A9EC4).withOpacity(0.3),
-                    blurRadius: 80,
-                    spreadRadius: 30,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // Bottom Right Decorative Circle
-          Positioned(
-            bottom: 40,
-            right: -40,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.15),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF8A9FD1).withOpacity(0.3),
-                    blurRadius: 60,
-                    spreadRadius: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // Login Form
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
@@ -121,9 +100,10 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Hoş Geldiniz!',
+                      'Yeni Şifre Oluştur',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.quicksand(
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         shadows: [
@@ -135,24 +115,34 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Lütfen yeni şifrenizi girin.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
+                    ),
                     const SizedBox(height: 24),
                     _buildTextField(
-                      controller: _usernameController,
-                      hintText: 'Kullanıcı Adı',
-                      icon: Icons.person,
+                      controller: _passwordController,
+                      hintText: 'Yeni Şifre',
+                      icon: Icons.lock_outline,
+                      isPassword: true,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
-                      controller: _passwordController,
-                      hintText: 'Şifre',
-                      icon: Icons.lock,
+                      controller: _confirmPasswordController,
+                      hintText: 'Yeni Şifre (Tekrar)',
+                      icon: Icons.lock_outline,
                       isPassword: true,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: _resetPassword,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.8),
                           foregroundColor: const Color(0xFF6A9EC4),
@@ -163,34 +153,11 @@ class _LoginPageState extends State<LoginPage> {
                           elevation: 5,
                         ),
                         child: Text(
-                          'Giriş Yap',
+                          'Şifreyi Güncelle',
                           style: GoogleFonts.quicksand(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16), // Buton ile link arasına boşluk bırakır
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
-                        );
-                      },
-                      child: Text(
-                        'Şifremi Unuttum',
-                        style: GoogleFonts.quicksand(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withOpacity(0.3),
-                              offset: const Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
                         ),
                       ),
                     ),

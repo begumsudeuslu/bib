@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'login_page.dart';
+import 'reset_password_page.dart'; // Yeni şifre belirleme sayfası
 
-// Bu sayfa, kullanıcıdan şifresini sıfırlaması için e-posta adresini ister.
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class ResetPasswordCodePage extends StatefulWidget {
+  const ResetPasswordCodePage({super.key});
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ResetPasswordCodePage> createState() => _ResetPasswordCodePageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final TextEditingController _emailController = TextEditingController();
+class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
+  final TextEditingController _codeController = TextEditingController();
 
-  void _sendResetEmail() {
-    // BURAYA KOD GÖNDERME İŞLEMİ GELECEK
+  void _verifyCode() {
+    // BURADA DOĞRULAMA KODUNUN KONTROLÜ YAPILACAK
     // *************************************
-    // Gerçek bir uygulamada, burada bir backend servisine API çağrısı yapılacak
-    // ve girilen e-posta adresine şifre sıfırlama linki veya kodu gönderilecek.
+    // Normalde uygulamada, girilen kodun, backend'in e-postaya gönderdiği kodla
+    // eşleşip eşleşmediği kontrol edilir ama database'den sonra eklenecek.
     //
-    // Backend servisi olmadığından, şimdilik sadece bir SnackBar gösterildi.
+    // Şimdiki basit bir örnektir.
     // *************************************
 
-    // Basit bir e-posta format kontrolü
-    if (_emailController.text.isNotEmpty && _emailController.text.contains('@')) {
+    // Örnek bir doğrulama kodu: "123456"
+    if (_codeController.text == '123456') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Şifre sıfırlama linki e-posta adresinize gönderildi!')),
+        const SnackBar(content: Text('Kod doğru! Yeni şifrenizi belirleyebilirsiniz.')),
       );
-
-      // E-posta gönderildikten sonra giriş sayfasına geri dönebiliriz.
-      Navigator.pushReplacement(
+      
+      // Kod doğruysa, yeni şifre belirleme sayfasına yönlendir.
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+        MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen geçerli bir e-posta adresi giriniz.')),
+        const SnackBar(content: Text('Hatalı doğrulama kodu.')),
       );
     }
   }
@@ -45,7 +44,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Şifremi Unuttum',
+          'Doğrulama Kodu',
           style: GoogleFonts.quicksand(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF6A9EC4),
@@ -53,7 +52,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
       body: Stack(
         children: [
-          // Gradient Background (login_page ile aynı)
+          // Gradient Background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -67,7 +66,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ),
             ),
           ),
-          // Ortadaki kutu (login_page ile aynı mantıkta)
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
@@ -93,7 +91,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Şifrenizi Sıfırlayın',
+                      'Doğrulama Kodu Giriniz',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.quicksand(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -109,7 +108,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Lütfen hesap e-posta adresinizi girin.',
+                      'E-posta adresinize gönderilen 6 haneli kodu girin.',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.quicksand(
                         fontSize: 14,
@@ -118,15 +117,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                     const SizedBox(height: 24),
                     _buildTextField(
-                      controller: _emailController,
-                      hintText: 'E-posta Adresi',
-                      icon: Icons.email,
+                      controller: _codeController,
+                      hintText: 'Doğrulama Kodu',
+                      icon: Icons.vpn_key,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _sendResetEmail,
+                        onPressed: _verifyCode,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.8),
                           foregroundColor: const Color(0xFF6A9EC4),
@@ -137,7 +136,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           elevation: 5,
                         ),
                         child: Text(
-                          'Şifreyi Sıfırla',
+                          'Kodu Onayla',
                           style: GoogleFonts.quicksand(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -175,6 +174,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       child: TextField(
         controller: controller,
         style: GoogleFonts.quicksand(color: Colors.white),
+        keyboardType: TextInputType.number, // Sadece sayı girmesini sağlamak için
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.quicksand(color: Colors.white70),
