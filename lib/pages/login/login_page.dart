@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password/forgot_password_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 
 class LoginPage extends StatefulWidget {
@@ -16,25 +18,54 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() async { // async keyword'ünü ekliyoruz
-    // Burada basit bir kontrol yapıyoruz.
-    if (_usernameController.text == 'bib' && _passwordController.text == '123') {
-      
-      // Giriş başarılı! shared_preferences ile durumu kaydedelim.
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true); // 'isLoggedIn' anahtarıyla true değerini saklıyoruz.
+ void _login() async {
+    final email = _usernameController.text;
+    final password = _passwordController.text;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+    final url = Uri.parse('https://192.168.1.122:7171/api/users/login');
+
+    print("API'ye istek atılıyor...");
+    print("Gönderilen Email: $email");
+    print("Gönderilen Şifre: $password");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'passwordHash': password,
+        }),
       );
-    } else {
-      // Hata mesajı göster
+
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('token', token ?? '');
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Giriş başarısız: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!')),
+        SnackBar(content: Text('Hata oluştu: $e')),
       );
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
