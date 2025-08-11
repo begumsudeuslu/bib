@@ -1,30 +1,29 @@
+// lib/BusInBr/create_user/create_user_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../home/home_page.dart';
-import 'create_user_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'forgot_password/forgot_password_page.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class CreateUserPage extends StatefulWidget {
+  const CreateUserPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateUserPage> createState() => _CreateUserPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController(); // E-posta için controller
+class _CreateUserPageState extends State<CreateUserPage> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  void _login() async {
-    final email = _emailController.text;
+  void _createUser() async {
+    final username = _usernameController.text;
     final password = _passwordController.text;
+    final email = _emailController.text;
 
-    final url = Uri.parse('https://192.168.1.122:7171/api/users/login');
-
+    final url = Uri.parse('https://192.168.1.122:7171/api/users'); // API endpoint'i
+    
     try {
       final response = await http.post(
         url,
@@ -32,27 +31,22 @@ class _LoginPageState extends State<LoginPage> {
         body: jsonEncode({
           'email': email,
           'passwordHash': password,
+          'username': username,
         }),
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final token = data['token'];
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        await prefs.setString('token', token ?? '');
-
+      if (response.statusCode == 201) { // 201 Created genellikle başarılı kayıt anlamına gelir
         if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Kullanıcı başarıyla oluşturuldu!')),
           );
+          // Kayıt başarılı olduğunda bir önceki sayfaya (LoginPage) dön
+          Navigator.of(context).pop();
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Giriş başarısız: ${response.statusCode}')),
+            SnackBar(content: Text('Kullanıcı oluşturma başarısız: ${response.body}')),
           );
         }
       }
@@ -70,21 +64,20 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient Arka Plan
+          // Gradient ve dekoratif baloncuklar için aynı yapı
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF6A9EC4),
-                  Color(0xFFB0C4DE),
-                  Color(0xFF8A9FD1),
+                  Color(0xFF6A9EC4), // Soft blue
+                  Color(0xFFB0C4DE), // Light steel blue
+                  Color(0xFF8A9FD1), // Soft periwinkle
                 ],
               ),
             ),
           ),
-          // Baloncuk Efektleri
           Positioned(
             top: -60,
             left: -60,
@@ -130,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: 400,
                 padding: const EdgeInsets.all(32.0),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2), // Yarı saydam arka plan
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -148,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Hoş Geldiniz',
+                      'Yeni Hesap Oluştur',
                       style: GoogleFonts.quicksand(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -167,6 +160,14 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _emailController,
                       hintText: 'E-posta',
                       icon: Icons.email,
+                      isPassword: false,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _usernameController,
+                      hintText: 'Kullanıcı Adı',
+                      icon: Icons.person,
+                      isPassword: false,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
@@ -179,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: _createUser,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.8),
                           foregroundColor: const Color(0xFF6A9EC4),
@@ -190,59 +191,11 @@ class _LoginPageState extends State<LoginPage> {
                           elevation: 5,
                         ),
                         child: Text(
-                          'Giriş Yap',
+                          'Hesap Oluştur',
                           style: GoogleFonts.quicksand(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Şifremi Unuttum bağlantısı
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
-                        );
-                      },
-                      child: Text(
-                        'Şifremi Unuttum',
-                        style: GoogleFonts.quicksand(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withOpacity(0.3),
-                              offset: const Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Yeni Hesap Oluştur bağlantısı
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const CreateUserPage()),
-                        );
-                      },
-                      child: Text(
-                        'Yeni Hesap Oluştur',
-                        style: GoogleFonts.quicksand(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withOpacity(0.3),
-                              offset: const Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -256,6 +209,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // Bu metot, LoginPage ile aynı olduğu için burada tekrar tanımlandı.
+  // Daha iyi bir yapı için bu metodu ayrı bir widget'a taşıyabilirsiniz.
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
