@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../home/home_page.dart';
-import 'create_user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password/forgot_password_page.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
+import 'create_user_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,52 +15,63 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController(); // E-posta için controller
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+
   void _login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-
-    final url = Uri.parse('https://192.168.1.122:7171/api/users/login');
-
     try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'passwordHash': password,
-        }),
+      await _auth.signInWithEmailAndPassword(
+          email: _usernameController.text, password: _passwordController.text);
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'user-not-found') {
+        message = "Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı.";
+      } else if (e.code == 'wrong-password') {
+        message = "E-posta veya şifre hatalı.";
+      } else {
+        message = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn.instance.authenticate();
+
+      if (googleUser == null) {
+        return; //kullanıcı google ile giriş akşını iptal etti
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.idToken,
+        idToken: googleAuth.idToken,
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final token = data['token'];
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        await prefs.setString('token', token ?? '');
-
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Giriş başarısız: ${response.statusCode}')),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hata oluştu: $e')),
-        );
-      }
+      await _auth.signInWithCredential(credential);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Google ile giriş sırasında bir hata oluştu: {$e.message}")));
     }
   }
 
@@ -70,21 +80,19 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient Arka Plan
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF6A9EC4),
-                  Color(0xFFB0C4DE),
-                  Color(0xFF8A9FD1),
+                  Color(0xFF6A9EC4), // Soft blue
+                  Color(0xFFB0C4DE), // Light steel blue
+                  Color(0xFF8A9FD1), // Soft periwinkle
                 ],
               ),
             ),
           ),
-          // Baloncuk Efektleri
           Positioned(
             top: -60,
             left: -60,
@@ -130,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: 400,
                 padding: const EdgeInsets.all(32.0),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2), // Yarı saydam arka plan
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -148,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Hoş Geldiniz',
+                      'Hoş Geldiniz!',
                       style: GoogleFonts.quicksand(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -164,9 +172,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
                     _buildTextField(
-                      controller: _emailController,
-                      hintText: 'E-posta',
-                      icon: Icons.email,
+                      controller: _usernameController,
+                      hintText: 'Kullanıcı Adı',
+                      icon: Icons.person,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
@@ -199,12 +207,45 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Şifremi Unuttum bağlantısı
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _signInWithGoogle,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black54,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(color: Colors.black26),
+                          ),
+                          elevation: 5,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.g_mobiledata, size: 24),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              'Google ile Giriş Yap',
+                              style: GoogleFonts.quicksand(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordPage()),
                         );
                       },
                       child: Text(
@@ -222,17 +263,17 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    // Yeni Hesap Oluştur bağlantısı
+                    const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const CreateUserPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const CreateUserPage()),
                         );
                       },
                       child: Text(
-                        'Yeni Hesap Oluştur',
+                        'Hesap Oluştur',
                         style: GoogleFonts.quicksand(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

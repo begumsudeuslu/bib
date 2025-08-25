@@ -2,8 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateUserPage extends StatefulWidget {
   const CreateUserPage({super.key});
@@ -22,38 +21,27 @@ class _CreateUserPageState extends State<CreateUserPage> {
     final password = _passwordController.text;
     final email = _emailController.text;
 
-    final url = Uri.parse('https://192.168.1.122:7171/api/users'); // API endpoint'i
-    
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'passwordHash': password,
-          'username': username,
-        }),
-      );
+    if (username.isNotEmpty && password.isNotEmpty && email.isNotEmpty) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      
+      // Kullanıcı bilgilerini yerel olarak kaydet
+      // Her yeni kullanıcı için benzersiz bir anahtar kullanabiliriz,
+      // ancak şimdilik basit tutmak için username'i anahtar olarak kullanacağız.
+      await prefs.setString('user_$username', '{"username": "$username", "password": "$password", "email": "$email"}');
 
-      if (response.statusCode == 201) { // 201 Created genellikle başarılı kayıt anlamına gelir
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Kullanıcı başarıyla oluşturuldu!')),
-          );
-          // Kayıt başarılı olduğunda bir önceki sayfaya (LoginPage) dön
-          Navigator.of(context).pop();
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Kullanıcı oluşturma başarısız: ${response.body}')),
-          );
-        }
-      }
-    } catch (e) {
+      // Başarılı mesajı göster
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hata oluştu: $e')),
+          const SnackBar(content: Text('Kullanıcı başarıyla oluşturuldu!')),
+        );
+        // Kayıt başarılı olduğunda bir önceki sayfaya (LoginPage) dön
+        Navigator.of(context).pop();
+      }
+    } else {
+      // Hata mesajı göster
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Lütfen tüm alanları doldurun.')),
         );
       }
     }
@@ -62,6 +50,22 @@ class _CreateUserPageState extends State<CreateUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Yeni Hesap Oluştur',
+          style: GoogleFonts.quicksand(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           // Gradient ve dekoratif baloncuklar için aynı yapı
@@ -160,14 +164,12 @@ class _CreateUserPageState extends State<CreateUserPage> {
                       controller: _emailController,
                       hintText: 'E-posta',
                       icon: Icons.email,
-                      isPassword: false,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
                       controller: _usernameController,
                       hintText: 'Kullanıcı Adı',
                       icon: Icons.person,
-                      isPassword: false,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
@@ -209,8 +211,6 @@ class _CreateUserPageState extends State<CreateUserPage> {
     );
   }
 
-  // Bu metot, LoginPage ile aynı olduğu için burada tekrar tanımlandı.
-  // Daha iyi bir yapı için bu metodu ayrı bir widget'a taşıyabilirsiniz.
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,

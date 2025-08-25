@@ -1,18 +1,21 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     // Flutter plugin must come last
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
-    namespace = "com.example.proje_adi" // kendi package name'inle aynı olmalı
+    namespace = "com.example.projeAdi" // kendi package name'inle aynı olmalı
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     defaultConfig {
-        applicationId = "com.example.proje_adi"
-        minSdk = flutter.minSdkVersion
+        applicationId = "com.example.projeAdi"
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
