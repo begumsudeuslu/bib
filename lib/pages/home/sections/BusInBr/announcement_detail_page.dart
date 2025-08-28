@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'announcement.dart';
 import 'package:intl/intl.dart';
-import 'utils/app_colors.dart'; // Yeni helper dosyasını import et
+import 'utils/app_colors.dart';
+import '../../../../widgets/announcement_detail_page_widgets/info_row_section.dart';
+import '../../../../widgets/announcement_detail_page_widgets/attachments_section.dart';
 
 class AnnouncementDetailPage extends StatelessWidget {
   final Announcement announcement;
@@ -13,7 +15,8 @@ class AnnouncementDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('dd MMMM yyyy HH:mm', 'tr_TR');
-    final String formattedPublishDate = formatter.format(announcement.publishDate);
+    final String formattedPublishDate =
+        formatter.format(announcement.publishDate);
     final String? formattedEndDate = announcement.endDate != null
         ? formatter.format(announcement.endDate!)
         : null;
@@ -22,7 +25,8 @@ class AnnouncementDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           announcement.title,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF0D47A1),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -101,7 +105,8 @@ class AnnouncementDetailPage extends StatelessWidget {
                               height: 250,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: Icon(Icons.broken_image, size: 60, color: Colors.grey[600]),
+                              child: Icon(Icons.broken_image,
+                                  size: 60, color: Colors.grey[600]),
                             );
                           },
                         ),
@@ -121,10 +126,15 @@ class AnnouncementDetailPage extends StatelessWidget {
                 Row(
                   children: [
                     Chip(
-                      label: Text(announcement.category, style: const TextStyle(fontSize: 14, color: Colors.white)),
-                      backgroundColor: getCategoryColor(announcement.category, context), // Bu satırda değişiklik yapıldı
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      label: Text(announcement.category,
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.white)),
+                      backgroundColor: getCategoryColor(announcement.category,
+                          context), // Bu satırda değişiklik yapıldı
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 2),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     const SizedBox(width: 10),
                     Text(
@@ -134,19 +144,29 @@ class AnnouncementDetailPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                _buildInfoRow(Icons.calendar_today, 'Yayın Tarihi', formattedPublishDate),
+
+                InfoRowSection(
+                    icon: Icons.calendar_today,
+                    label: 'Yayın Tarihi',
+                    content: formattedPublishDate),
+
                 if (formattedEndDate != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: _buildInfoRow(Icons.event_busy, 'Son Geçerlilik', formattedEndDate),
+                    child: InfoRowSection(
+                        icon: Icons.event_busy,
+                        label: 'Son Geçerlilik',
+                        content: formattedEndDate),
                   ),
+
                 const SizedBox(height: 15),
                 Text(
                   announcement.content,
-                  style: TextStyle(fontSize: 16, color: Colors.grey[800], height: 1.5),
+                  style: TextStyle(
+                      fontSize: 16, color: Colors.grey[800], height: 1.5),
                 ),
                 const SizedBox(height: 20),
-                _buildAttachmentsSection(announcement.attachments, context), // Bu satırda değişiklik yapıldı
+                AttachmentsSection(attachments: announcement.attachments,onGetFileNameFromUrl:  _getFileNameFromUrl), // Bu satırda değişiklik yapıldı
                 const SizedBox(height: 15),
                 _buildTagsSection(announcement.tags),
                 const SizedBox(height: 30),
@@ -158,7 +178,8 @@ class AnnouncementDetailPage extends StatelessWidget {
                       label: 'Beğen',
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Beğeni özelliği yakında!')),
+                          const SnackBar(
+                              content: Text('Beğeni özelliği yakında!')),
                         );
                       },
                     ),
@@ -167,7 +188,8 @@ class AnnouncementDetailPage extends StatelessWidget {
                       label: 'Yorum Yap',
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Yorum özelliği yakında!')),
+                          const SnackBar(
+                              content: Text('Yorum özelliği yakında!')),
                         );
                       },
                     ),
@@ -176,7 +198,8 @@ class AnnouncementDetailPage extends StatelessWidget {
                       label: 'Paylaş',
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Paylaşma özelliği yakında!')),
+                          const SnackBar(
+                              content: Text('Paylaşma özelliği yakında!')),
                         );
                       },
                     ),
@@ -188,96 +211,6 @@ class AnnouncementDetailPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // Bu kısım yukarıdaki getCategoryColor fonksiyonu ile değiştirildi
-  // Color _getCategoryColor(String category) { ... } // Bu metodu silin
-
-  // Diğer yardımcı widget'lar (buildInfoRow, buildAttachmentsSection, buildTagsSection, buildInteractionButton)
-  // hala AnnouncementDetailPage içinde kalabilir, çünkü bunlar context'e erişmiyor veya
-  // bu sınıfın dışından doğrudan çağrılmıyor.
-
-  Widget _buildInfoRow(IconData icon, String label, String content) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 22, color: const Color(0xFF0D47A1)),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-            Text(
-              content,
-              style: TextStyle(fontSize: 15, color: Colors.grey[800]),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAttachmentsSection(List<String> attachments, BuildContext context) {
-    if (attachments.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.attachment, size: 24, color: const Color(0xFF0D47A1)),
-            const SizedBox(width: 10),
-            Text(
-              'Ek Dosyalar',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 34.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: attachments.map((url) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: InkWell(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Dosya açılıyor: $url')),
-                  );
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.file_present, color: Colors.blue[700]),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        _getFileNameFromUrl(url),
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.blue[700],
-                            decoration: TextDecoration.underline),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )).toList(),
-          ),
-        ),
-      ],
     );
   }
 
@@ -313,22 +246,31 @@ class AnnouncementDetailPage extends StatelessWidget {
           child: Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
-            children: tags.map((tag) => Chip(
-              label: Text('#$tag', style: const TextStyle(fontSize: 14, color: Color(0xFF1A237E))),
-              backgroundColor: const Color(0xFFBBDEFB).withOpacity(0.7),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(color: Color(0xFF64B5F6), width: 0.5),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            )).toList(),
+            children: tags
+                .map((tag) => Chip(
+                      label: Text('#$tag',
+                          style: const TextStyle(
+                              fontSize: 14, color: Color(0xFF1A237E))),
+                      backgroundColor: const Color(0xFFBBDEFB).withOpacity(0.7),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            color: Color(0xFF64B5F6), width: 0.5),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
+                    ))
+                .toList(),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildInteractionButton({required IconData icon, required String label, required VoidCallback onTap}) {
+  Widget _buildInteractionButton(
+      {required IconData icon,
+      required String label,
+      required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
@@ -338,7 +280,8 @@ class AnnouncementDetailPage extends StatelessWidget {
           children: [
             Icon(icon, size: 28, color: const Color(0xFF0D47A1)),
             const SizedBox(height: 5),
-            Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF1A237E))),
+            Text(label,
+                style: const TextStyle(fontSize: 13, color: Color(0xFF1A237E))),
           ],
         ),
       ),
