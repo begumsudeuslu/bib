@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'employee_list_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:proje_adi/widgets/about_us_page_widgets/employee_card_section.dart';
+import '../../../../widgets/about_us_page_widgets/title_section.dart';
+import '../../../../widgets/about_us_page_widgets/card_section.dart';
+import '../../../../widgets/about_us_page_widgets/project_item_section.dart';
+import '../../../../widgets/about_us_page_widgets/contact_info_section.dart';
+import '../../../../widgets/about_us_page_widgets/launchable_link_section.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -42,7 +46,7 @@ class AboutUsPage extends StatelessWidget {
             ),
             leading: IconButton(
               icon: Icon(
-                Icons.arrow_back_rounded, 
+                Icons.arrow_back_rounded,
                 color: Colors.blueGrey[800],
               ),
               onPressed: () => Navigator.of(context).pop(),
@@ -53,43 +57,70 @@ class AboutUsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // Şirket Tanıtımı
-                _buildSectionCard(
+                CardSection(
                   title: 'BİZ KİMİZ?',
-                  content: 'BIB Yazılım A.Ş. olarak, geleceğin dijital dünyasını şekillendiren öncü teknoloji çözümleri sunuyoruz. Yüksek kaliteli yazılım ürünleri geliştirerek, işletmelerin verimliliğini artırmayı ve dijitalleşme süreçlerini kolaylaştırmayı hedefliyoruz.',
+                  content:
+                      'BIB Yazılım A.Ş. olarak, geleceğin dijital dünyasını şekillendiren öncü teknoloji çözümleri sunuyoruz. Yüksek kaliteli yazılım ürünleri geliştirerek, işletmelerin verimliliğini artırmayı ve dijitalleşme süreçlerini kolaylaştırmayı hedefliyoruz.',
                   icon: Icons.business_rounded,
                 ),
 
                 const SizedBox(height: 20),
 
                 // Tamamlanmış Projeler
-                _buildSectionTitle('✅ Tamamlanmış Projeler'),
+                SectionTitle(title: '✅ Tamamlanmış Projeler'),
+
                 const SizedBox(height: 10),
-                _buildProjectItem('Kurumsal CRM Sistemi', 'Büyük ölçekli firmalar için müşteri ilişkileri yönetim çözümü.'),
-                _buildProjectItem('Mobil Bankacılık Uygulaması', 'Güvenli ve kullanıcı dostu mobil bankacılık platformu.'),
-                _buildProjectItem('E-Ticaret Entegrasyon Çözümü', 'Farklı e-ticaret altyapılarıyla entegre çalışan sistem.'),
-                _buildProjectItem('Yapay Zeka Destekli Analiz Platformu', 'Veri analizi ve raporlama için akıllı platform.'),
+
+                ProjectItemSection(
+                    title: 'Kurumsal CRM Sistemi',
+                    description:
+                        'Büyük ölçekli firmalar için müşteri ilişkileri yönetim çözümü.'),
+                ProjectItemSection(
+                    title: 'Mobil Bankacılık Uygulaması',
+                    description:
+                        'Güvenli ve kullanıcı dostu mobil bankacılık platformu.'),
+                ProjectItemSection(
+                    title: 'E-Ticaret Entegrasyon Çözümü',
+                    description:
+                        'Farklı e-ticaret altyapılarıyla entegre çalışan sistem.'),
+                ProjectItemSection(
+                    title: 'Yapay Zeka Destekli Analiz Platformu',
+                    description:
+                        'Veri analizi ve raporlama için akıllı platform.'),
 
                 const SizedBox(height: 20),
 
                 // İletişim Bilgileri
-                _buildSectionTitle('📍 Konumumuz'),
+                SectionTitle(title: '📍 Konumumuz'),
                 const SizedBox(height: 10),
-                _buildContactInfo(Icons.location_on_rounded, 'Adres', 'Örnek Mah. Örnek Cad. No: 123, Çankaya/Ankara'),
-                _buildLaunchableLink(
-                  context,
-                  'Haritada Göster',
-                  'https://www.google.com/maps/search/?api=1&query=Ankara+%C3%87ankaya+%C3%96rnek+Mah.+%C3%96rnek+Cad.+No:+123',
-                  Icons.map_rounded,
+
+                ContactInfoSection(
+                    icon: Icons.location_on_rounded,
+                    title: 'Adres',
+                    content: 'Örnek Mah. Örnek Cad. No: 123, Çankaya/Ankara'),
+
+                LaunchableLinkSection(
+                  text: 'Haritada Göster',
+                  url:
+                      'https://www.google.com/maps/search/?api=1&query=Ankara+%C3%87ankaya+%C3%96rnek+Mah.+%C3%96rnek+Cad.+No:+123',
+                  icon: Icons.map_rounded,
                 ),
-                _buildContactInfo(Icons.phone_rounded, 'Telefon', '+90 (312) 123 45 67'),
-                _buildContactInfo(Icons.email_rounded, 'E-posta', 'info@bibyazilim.com'),
+
+                ContactInfoSection(
+                    icon: Icons.phone_rounded,
+                    title: 'Telefon',
+                    content: '+90 (312) 123 45 67'),
+                ContactInfoSection(
+                    icon: Icons.email_rounded,
+                    title: 'E-posta',
+                    content: 'info@bibyazilim.com'),
 
                 const SizedBox(height: 20),
 
                 // Çalışanlar Bölümü
-                _buildSectionTitle('👥 Çalışanlarımız'),
+                SectionTitle(title: '👥 Çalışanlarımız'),
                 const SizedBox(height: 10),
-                _buildEmployeeCard(context),
+                EmployeeCardSection(),
 
                 const SizedBox(height: 30),
 
@@ -98,7 +129,7 @@ class AboutUsPage extends StatelessWidget {
                   child: Text(
                     '© ${DateTime.now().year} BIB Yazılım A.Ş. Tüm Hakları Saklıdır.',
                     style: GoogleFonts.quicksand(
-                      fontSize: 14, 
+                      fontSize: 14,
                       color: Colors.blueGrey[600],
                     ),
                     textAlign: TextAlign.center,
@@ -108,326 +139,6 @@ class AboutUsPage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: GoogleFonts.quicksand(
-        fontSize: 22,
-        fontWeight: FontWeight.w700,
-        color: Colors.blueGrey[800],
-      ),
-    );
-  }
-
-  Widget _buildSectionCard({
-    required String title,
-    required String content,
-    required IconData icon,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        leading: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blueGrey[100],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blueGrey.withOpacity(0.2),
-                blurRadius: 8,
-                spreadRadius: 2,
-              )
-            ],
-          ),
-          child: Icon(
-            icon, 
-            color: Colors.blueGrey[700], 
-            size: 28,
-          ),
-        ),
-        title: Text(
-          title,
-          style: GoogleFonts.quicksand(
-            fontWeight: FontWeight.w700,
-            color: Colors.blueGrey[800],
-            fontSize: 18,
-          ),
-        ),
-        subtitle: Text(
-          content,
-          style: GoogleFonts.quicksand(
-            color: Colors.blueGrey[600],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProjectItem(String title, String description) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.green.withOpacity(0.1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.green.withOpacity(0.2),
-                blurRadius: 8,
-                spreadRadius: 2,
-              )
-            ],
-          ),
-          child: Icon(
-            Icons.check_circle_outline_rounded, 
-            color: Colors.green[700], 
-            size: 24,
-          ),
-        ),
-        title: Text(
-          title,
-          style: GoogleFonts.quicksand(
-            fontWeight: FontWeight.w700,
-            color: Colors.blueGrey[800],
-            fontSize: 18,
-          ),
-        ),
-        subtitle: Text(
-          description,
-          style: GoogleFonts.quicksand(
-            color: Colors.blueGrey[600],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContactInfo(IconData icon, String title, String content) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blueGrey[100],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blueGrey.withOpacity(0.2),
-                blurRadius: 8,
-                spreadRadius: 2,
-              )
-            ],
-          ),
-          child: Icon(
-            icon, 
-            color: Colors.blueGrey[700], 
-            size: 24,
-          ),
-        ),
-        title: Text(
-          title,
-          style: GoogleFonts.quicksand(
-            fontWeight: FontWeight.w700,
-            color: Colors.blueGrey[800],
-            fontSize: 18,
-          ),
-        ),
-        subtitle: Text(
-          content,
-          style: GoogleFonts.quicksand(
-            color: Colors.blueGrey[600],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLaunchableLink(BuildContext context, String text, String url, IconData icon) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blueGrey[100],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blueGrey.withOpacity(0.2),
-                blurRadius: 8,
-                spreadRadius: 2,
-              )
-            ],
-          ),
-          child: Icon(
-            icon, 
-            color: Colors.blueGrey[700], 
-            size: 24,
-          ),
-        ),
-        title: Text(
-          text,
-          style: GoogleFonts.quicksand(
-            color: Colors.blueGrey[700],
-            fontWeight: FontWeight.w700,
-            decoration: TextDecoration.underline,
-          ),
-        ),
-        onTap: () async {
-          if (await canLaunchUrl(Uri.parse(url))) {
-            await launchUrl(Uri.parse(url));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Bağlantı açılamadı: $url')),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildEmployeeCard(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EmployeeListPage()),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blueGrey[100],
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blueGrey.withOpacity(0.2),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      )
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.groups_rounded, 
-                    color: Colors.blueGrey[700], 
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Ekibimizle Tanışın',
-                        style: GoogleFonts.quicksand(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.blueGrey[800],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Yetenekli ve deneyimli ekibimizi keşfedin.',
-                        style: GoogleFonts.quicksand(
-                          fontSize: 14,
-                          color: Colors.blueGrey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded, 
-                  size: 20, 
-                  color: Colors.blueGrey[600]
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
