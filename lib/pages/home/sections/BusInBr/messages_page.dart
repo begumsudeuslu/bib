@@ -1,6 +1,7 @@
 // lib/BusInBr/messages_page.dart
 
 import 'package:flutter/material.dart';
+import '../../../../widgets/message_widgets/chat_view_section.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -64,16 +65,17 @@ class _MessagesPageState extends State<MessagesPage> {
               children: [
                 _buildChatList(context),
                 _selectedChat != null
-                    ? _buildChatView(context, _selectedChat!)
-                    : const Expanded(
-                        child: Center(
-                          child: Text('Bir sohbet seçin.'),
-                        ),
-                      ),
+                    ? ChatViewSection(
+                  chat: _selectedChat!,
+                  messageController: _messageController,
+                )
+              : Container(),
               ],
             )
           : _selectedChat != null
-              ? _buildChatView(context, _selectedChat!)
+              ? ChatViewSection(
+                  chat: _selectedChat!,
+                  messageController: _messageController,)
               : _buildChatList(context),
     );
   }
