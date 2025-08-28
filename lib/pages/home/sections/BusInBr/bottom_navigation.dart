@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'my_calendar.dart';
 import 'about_us_page.dart';
-import 'projects_page.dart';
+import 'projects_pages/projects_page.dart';
 import 'messages_page.dart';
 import 'announcement_pages/announcements_page.dart';
 
