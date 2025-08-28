@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'announcement.dart';
 import 'package:intl/intl.dart';
-import 'utils/app_colors.dart';
-import '../../../../widgets/announcement_detail_page_widgets/info_row_section.dart';
-import '../../../../widgets/announcement_detail_page_widgets/attachments_section.dart';
-import '../../../../widgets/announcement_detail_page_widgets/tag_section.dart';
-import '../../../../widgets/announcement_detail_page_widgets/interaction_button_section.dart';
+import '../utils/app_colors.dart';
+import '../../../../../widgets/announcement_detail_page_widgets/info_row_section.dart';
+import '../../../../../widgets/announcement_detail_page_widgets/attachments_section.dart';
+import '../../../../../widgets/announcement_detail_page_widgets/tag_section.dart';
+import '../../../../../widgets/announcement_detail_page_widgets/interaction_button_section.dart';
 
 class AnnouncementDetailPage extends StatelessWidget {
   final Announcement announcement;

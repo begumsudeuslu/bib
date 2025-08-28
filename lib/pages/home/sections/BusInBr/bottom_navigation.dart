@@ -4,7 +4,7 @@ import 'my_calendar.dart';
 import 'about_us_page.dart';
 import 'projects_page.dart';
 import 'messages_page.dart';
-import 'announcements_page.dart';
+import 'announcement_pages/announcements_page.dart';
 
 class BIBBottomNavigationBar extends StatefulWidget {
   const BIBBottomNavigationBar({super.key});

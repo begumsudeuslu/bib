@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'announcement.dart'; // Yeni Announcement modelini import ettik
 import 'announcement_detail_page.dart'; // Duyuru Detay Sayfasını import ettik
-import 'utils/app_colors.dart'; // getCategoryColor fonksiyonunun bulunduğu dosya
+import '../utils/app_colors.dart'; // getCategoryColor fonksiyonunun bulunduğu dosya
 
 class AnnouncementsPage extends StatefulWidget {
   const AnnouncementsPage({super.key});
