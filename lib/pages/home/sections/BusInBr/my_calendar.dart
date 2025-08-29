@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:animations/animations.dart';
+import '../../../../widgets/calendar_widgets/animated_text_field_section.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -10,7 +11,8 @@ class CalendarPage extends StatefulWidget {
   State<CalendarPage> createState() => _CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderStateMixin {
+class _CalendarPageState extends State<CalendarPage>
+    with SingleTickerProviderStateMixin {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -44,7 +46,7 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
 
   void _showEventDialog({Event? eventToEdit, DateTime? date}) {
     final isEditing = eventToEdit != null;
-    
+
     _eventController.text = isEditing ? eventToEdit.title : '';
     _descriptionController.text = isEditing ? eventToEdit.description : '';
     _selectedImportance = isEditing ? eventToEdit.importance : Importance.low;
@@ -84,13 +86,14 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
                 ),
               ),
               const SizedBox(height: 20),
-              _buildAnimatedTextField(
+              AnimatedTextFieldSection(
                 controller: _eventController,
                 labelText: 'Başlık',
+                maxLines: 1,
                 icon: Icons.title_rounded,
               ),
               const SizedBox(height: 15),
-              _buildAnimatedTextField(
+              AnimatedTextFieldSection(
                 controller: _descriptionController,
                 labelText: 'Açıklama (İsteğe Bağlı)',
                 maxLines: 3,
@@ -101,7 +104,7 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
+                children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
@@ -113,32 +116,33 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
                     ),
                   ),
                   const SizedBox(width: 10),
-          ElevatedButton(
-            onPressed: () {
-              if (_eventController.text.isEmpty) return;
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_eventController.text.isEmpty) return;
 
-              setState(() {
-                final newEvent = Event(
-                  title: _eventController.text,
-                  description: _descriptionController.text,
-                  importance: _selectedImportance,
-                );
+                      setState(() {
+                        final newEvent = Event(
+                          title: _eventController.text,
+                          description: _descriptionController.text,
+                          importance: _selectedImportance,
+                        );
 
                         if (isEditing) {
-                  _events[_selectedDay!] = _events[_selectedDay!]!
-                      .map((e) => e == eventToEdit ? newEvent : e)
-                      .toList();
-                } else if (date != null) {
-                  final dayWithoutTime = DateTime(date.year, date.month, date.day);
-                  _events.update(
-                    dayWithoutTime,
-                    (value) => [...value, newEvent],
-                    ifAbsent: () => [newEvent],
-                  );
-                }
-              });
-              Navigator.pop(context);
-            },
+                          _events[_selectedDay!] = _events[_selectedDay!]!
+                              .map((e) => e == eventToEdit ? newEvent : e)
+                              .toList();
+                        } else if (date != null) {
+                          final dayWithoutTime =
+                              DateTime(date.year, date.month, date.day);
+                          _events.update(
+                            dayWithoutTime,
+                            (value) => [...value, newEvent],
+                            ifAbsent: () => [newEvent],
+                          );
+                        }
+                      });
+                      Navigator.pop(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueGrey[700],
                       shape: RoundedRectangleBorder(
@@ -164,61 +168,8 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
     ).then((_) {
       _animationController.reverse();
     });
-    
-    _animationController.forward();
-  }
 
-  Widget _buildAnimatedTextField({
-    required TextEditingController controller,
-    required String labelText,
-    int maxLines = 1,
-    required IconData icon,
-  }) {
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 300),
-      tween: Tween(begin: 0.0, end: 1.0),
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: 0.9 + (value * 0.1),
-          child: Opacity(
-            opacity: value,
-            child: TextField(
-              controller: controller,
-              maxLines: maxLines,
-              decoration: InputDecoration(
-                labelText: labelText,
-                prefixIcon: Icon(icon, color: Colors.blueGrey[300]),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(
-                    color: Colors.blueGrey[200]!,
-                    width: 1.5,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(
-                    color: Colors.blueGrey[100]!,
-                    width: 1.5,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(
-                    color: Colors.blueGrey[700]!,
-                    width: 2,
-                  ),
-                ),
-                labelStyle: GoogleFonts.quicksand(
-                  color: Colors.blueGrey[600],
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    _animationController.forward();
   }
 
   Widget _buildImportanceSelector() {
@@ -305,8 +256,8 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
       ),
       body: SafeArea(
         child: Column(
-        children: [
-          Container(
+          children: [
+            Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -321,44 +272,44 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2020, 1, 1),
-                    lastDay: DateTime.utc(2030, 12, 31),
-                    focusedDay: _focusedDay,
-                    calendarFormat: _calendarFormat,
+                child: TableCalendar(
+                  firstDay: DateTime.utc(2020, 1, 1),
+                  lastDay: DateTime.utc(2030, 12, 31),
+                  focusedDay: _focusedDay,
+                  calendarFormat: _calendarFormat,
                   selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    onDaySelected: (selectedDay, focusedDay) {
+                  onDaySelected: (selectedDay, focusedDay) {
                     if (!isSameDay(_selectedDay, selectedDay)) {
                       setState(() {
                         _selectedDay = selectedDay;
                         _focusedDay = focusedDay;
                       });
                     }
-                    },
-                    onFormatChanged: (format) {
-                      if (_calendarFormat != format) {
-                        setState(() {
-                          _calendarFormat = format;
-                        });
-                      }
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
+                  },
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  },
+                  onPageChanged: (focusedDay) {
+                    _focusedDay = focusedDay;
+                  },
                   eventLoader: _getEventsForDay,
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
+                  calendarStyle: CalendarStyle(
+                    todayDecoration: BoxDecoration(
                       color: Colors.blueGrey.withOpacity(0.5),
-                        shape: BoxShape.circle,
-                      ),
+                      shape: BoxShape.circle,
+                    ),
                     selectedDecoration: BoxDecoration(
                       color: Colors.blueGrey[700],
-                        shape: BoxShape.circle,
-                      ),
+                      shape: BoxShape.circle,
+                    ),
                     markerDecoration: BoxDecoration(
                       color: Colors.amber[700],
-                        shape: BoxShape.circle,
-                      ),
+                      shape: BoxShape.circle,
+                    ),
                     defaultTextStyle: GoogleFonts.quicksand(
                       color: Colors.blueGrey[800],
                       fontWeight: FontWeight.w600,
@@ -375,7 +326,7 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
                       color: Colors.blueGrey[800],
                     ),
                     formatButtonVisible: false,
-                      titleCentered: true,
+                    titleCentered: true,
                     leftChevronIcon: Icon(
                       Icons.chevron_left_rounded,
                       color: Colors.blueGrey[700],
@@ -400,12 +351,13 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
                 ),
               ),
             ),
-                Expanded(
+            Expanded(
               child: _getEventsForDay(_selectedDay!).isEmpty
                   ? _buildEmptyState()
                   : PageTransitionSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      transitionBuilder: (child, animation, secondaryAnimation) {
+                      transitionBuilder:
+                          (child, animation, secondaryAnimation) {
                         return SharedAxisTransition(
                           animation: animation,
                           secondaryAnimation: secondaryAnimation,
@@ -413,19 +365,19 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
                           child: child,
                         );
                       },
-                  child: ListView.builder(
+                      child: ListView.builder(
                         key: ValueKey(_selectedDay),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _getEventsForDay(_selectedDay!).length,
-                    itemBuilder: (context, index) {
-                      final event = _getEventsForDay(_selectedDay!)[index];
+                        itemCount: _getEventsForDay(_selectedDay!).length,
+                        itemBuilder: (context, index) {
+                          final event = _getEventsForDay(_selectedDay!)[index];
                           return _buildEventCard(event, index);
-                    },
-                  ),
-                ),
+                        },
+                      ),
+                    ),
             ),
           ],
-          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -499,7 +451,8 @@ class _CalendarPageState extends State<CalendarPage> with SingleTickerProviderSt
         ],
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         leading: Container(
           width: 15,
           height: 15,
