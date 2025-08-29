@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../pages/home/sections/BusInBr/employee_list_page.dart';
+import '../../pages/home/sections/BusInBr/employee_pages/employee_list_page.dart';
 
 class EmployeeCardSection extends StatelessWidget{
   const EmployeeCardSection({super.key});

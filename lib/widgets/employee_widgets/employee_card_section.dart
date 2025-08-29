@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proje_adi/pages/home/sections/BusInBr/employee_list_page.dart';
+import 'package:proje_adi/pages/home/sections/BusInBr/employee_pages/employee_list_page.dart';
 
 class EmployeeCardSection extends StatelessWidget {
   final Employee employee;

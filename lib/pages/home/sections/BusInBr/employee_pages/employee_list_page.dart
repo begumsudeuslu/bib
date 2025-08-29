@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../widgets/employee_widgets/employee_card_section.dart';
+import '../../../../../widgets/employee_widgets/employee_card_section.dart';
 
 class Employee {
   final String name;
