@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:proje_adi/widgets/message_widgets/chat_view_section.dart';
 
 class ChatListSection extends StatelessWidget {
+  final List<Map<String, dynamic>> chats;
+  final Map<String, dynamic>? selectedChat;
+  final Function(Map<String, dynamic>?) onChatSelected;
+  final TextEditingController messageController;
 
-  const ChatListSection ({super.key,});
+  const ChatListSection ({super.key, required this.chats, required this.selectedChat, required this.onChatSelected, required this.messageController});
 
   @override
   Widget build(BuildContext context)  {
@@ -34,9 +39,9 @@ class ChatListSection extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _chats.length,
+              itemCount: chats.length,
               itemBuilder: (context, index) {
-                final chat = _chats[index];
+                final chat = chats[index];
                 return ListTile(
                   leading: const CircleAvatar(
                     child: Icon(Icons.person),
@@ -51,10 +56,8 @@ class ChatListSection extends StatelessWidget {
                       ? const Icon(Icons.circle, size: 12, color: Colors.blue)
                       : null,
                   onTap: () async {
-                    setState(() {
-                      _selectedChat = chat;
-                    });
-
+                    onChatSelected(chat);
+                  
                     if (MediaQuery.of(context).size.width <= 800) {
                       // Küçük ekranlarda yeni sayfaya geçer gibi davran
                       await Navigator.of(context).push(
@@ -65,15 +68,13 @@ class ChatListSection extends StatelessWidget {
                               backgroundColor: const Color(0xFF0D47A1),
                               iconTheme: const IconThemeData(color: Colors.white),
                             ),
-                            body: _buildChatView(context, chat),
+                            body: ChatViewSection(chat: chat, messageController: messageController,),
                           ),
                         ),
                       );
 
                       // Geri dönüldüğünde sohbet seçimini kaldır
-                      setState(() {
-                        _selectedChat = null;
-                      });
+                      onChatSelected(null);
                     }
                   },
                 );
