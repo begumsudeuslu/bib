@@ -4,6 +4,7 @@ import '../home/home_page.dart';
 import 'create_user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password/forgot_password_page.dart';
+import '../../widgets/login_widgets/text_field_section.dart';
 
 
 
@@ -128,17 +129,17 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _buildTextField(
+                    TextFieldSection(
                       controller: _emailController,
                       hintText: 'E-posta',
                       icon: Icons.email,
                     ),
                     const SizedBox(height: 16),
-                    _buildTextField(
+                    TextFieldSection(
                       controller: _passwordController,
                       hintText: 'Şifre',
                       icon: Icons.lock,
-                      isPassword: true,
+                      obscureText: true,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -221,39 +222,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool isPassword = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        style: GoogleFonts.quicksand(color: Colors.white),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.quicksand(color: Colors.white70),
-          prefixIcon: Icon(icon, color: Colors.white70),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
-        ),
-      ),
-    );
-  }
 }
