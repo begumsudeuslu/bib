@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../login_page.dart'; // Yeni şifre belirlendikten sonra login sayfasına döneceğiz.
+import '../../../widgets/login_widgets/text_field_section.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -124,21 +125,27 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         color: Colors.white70,
                       ),
                     ),
+
                     const SizedBox(height: 24),
-                    _buildTextField(
+
+                    TextFieldSection(
                       controller: _passwordController,
                       hintText: 'Yeni Şifre',
                       icon: Icons.lock_outline,
-                      isPassword: true,
+                      obscureText: true,
                     ),
+
                     const SizedBox(height: 16),
-                    _buildTextField(
+
+                    TextFieldSection(
                       controller: _confirmPasswordController,
                       hintText: 'Yeni Şifre (Tekrar)',
                       icon: Icons.lock_outline,
-                      isPassword: true,
+                      obscureText: true,
                     ),
+
                     const SizedBox(height: 24),
+                    
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -171,39 +178,4 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool isPassword = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        style: GoogleFonts.quicksand(color: Colors.white),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.quicksand(color: Colors.white70),
-          prefixIcon: Icon(icon, color: Colors.white70),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
-        ),
-      ),
-    );
-  }
 }

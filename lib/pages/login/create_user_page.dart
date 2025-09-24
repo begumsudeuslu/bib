@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../widgets/login_widgets/text_field_section.dart';
 
 class CreateUserPage extends StatefulWidget {
   const CreateUserPage({super.key});
@@ -22,8 +23,9 @@ class _CreateUserPageState extends State<CreateUserPage> {
     final password = _passwordController.text;
     final email = _emailController.text;
 
-    final url = Uri.parse('https://192.168.1.122:7171/api/users'); // API endpoint'i
-    
+    final url =
+        Uri.parse('https://192.168.1.122:7171/api/users'); // API endpoint'i
+
     try {
       final response = await http.post(
         url,
@@ -35,7 +37,8 @@ class _CreateUserPageState extends State<CreateUserPage> {
         }),
       );
 
-      if (response.statusCode == 201) { // 201 Created genellikle başarılı kayıt anlamına gelir
+      if (response.statusCode == 201) {
+        // 201 Created genellikle başarılı kayıt anlamına gelir
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Kullanıcı başarıyla oluşturuldu!')),
@@ -46,7 +49,9 @@ class _CreateUserPageState extends State<CreateUserPage> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Kullanıcı oluşturma başarısız: ${response.body}')),
+            SnackBar(
+                content:
+                    Text('Kullanıcı oluşturma başarısız: ${response.body}')),
           );
         }
       }
@@ -156,25 +161,25 @@ class _CreateUserPageState extends State<CreateUserPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _buildTextField(
+                    TextFieldSection(
                       controller: _emailController,
                       hintText: 'E-posta',
                       icon: Icons.email,
-                      isPassword: false,
+                      obscureText: false,
                     ),
                     const SizedBox(height: 16),
-                    _buildTextField(
+                    TextFieldSection(
                       controller: _usernameController,
                       hintText: 'Kullanıcı Adı',
                       icon: Icons.person,
-                      isPassword: false,
+                      obscureText: false,
                     ),
                     const SizedBox(height: 16),
-                    _buildTextField(
+                    TextFieldSection(
                       controller: _passwordController,
                       hintText: 'Şifre',
                       icon: Icons.lock,
-                      isPassword: true,
+                      obscureText: true,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -205,44 +210,6 @@ class _CreateUserPageState extends State<CreateUserPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Bu metot, LoginPage ile aynı olduğu için burada tekrar tanımlandı.
-  // Daha iyi bir yapı için bu metodu ayrı bir widget'a taşıyabilirsiniz.
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool isPassword = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        style: GoogleFonts.quicksand(color: Colors.white),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.quicksand(color: Colors.white70),
-          prefixIcon: Icon(icon, color: Colors.white70),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
-        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'reset_password_page.dart'; // Yeni şifre belirleme sayfası
+import 'reset_password_page.dart';
+import '../../../widgets/login_widgets/text_field_section.dart';
 
 class ResetPasswordCodePage extends StatefulWidget {
   const ResetPasswordCodePage({super.key});
@@ -116,10 +117,11 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _buildTextField(
+                    TextFieldSection(
                       controller: _codeController,
                       hintText: 'Doğrulama Kodu',
                       icon: Icons.vpn_key,
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -150,41 +152,6 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        style: GoogleFonts.quicksand(color: Colors.white),
-        keyboardType: TextInputType.number, // Sadece sayı girmesini sağlamak için
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.quicksand(color: Colors.white70),
-          prefixIcon: Icon(icon, color: Colors.white70),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
-        ),
       ),
     );
   }
