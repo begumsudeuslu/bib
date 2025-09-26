@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:proje_adi/viewmodels/login_viewmodel.dart';
 import '../home/home_page.dart';
 import 'create_user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password/forgot_password_page.dart';
 import '../../widgets/login_widgets/text_field_section.dart';
-
+import 'package:provider/provider.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -16,23 +17,29 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController(); // E-posta için controller
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _login() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true);
-
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController(); // E-posta için controller
+    final TextEditingController passwordController = TextEditingController();
+
+    final viewModel =context.watch<LoginViewModel>();
+
+    void loginAttempt() async {
+      final success = await viewModel.login(emailController.text, passwordController.text);
+
+      if(success) {
+        if(context.mounted)   {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const HomePage()));
+        }
+      } else  {
+        if(context.mounted&& viewModel.errorMessage!=null)  {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(viewModel.errorMessage!), backgroundColor: Colors.red,));
+          viewModel.clearError(); //gösterildikten sonra sıfırlandı
+        }
+      }
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -130,13 +137,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
                     TextFieldSection(
-                      controller: _emailController,
+                      controller: emailController,
                       hintText: 'E-posta',
                       icon: Icons.email,
                     ),
                     const SizedBox(height: 16),
                     TextFieldSection(
-                      controller: _passwordController,
+                      controller: passwordController,
                       hintText: 'Şifre',
                       icon: Icons.lock,
                       obscureText: true,
@@ -145,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: viewModel.isLoading?null:loginAttempt,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.8),
                           foregroundColor: const Color(0xFF6A9EC4),
